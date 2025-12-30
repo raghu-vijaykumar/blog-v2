@@ -1,0 +1,12 @@
+📸 PLACE YOUR PROFILE PHOTO HERE
+
+To add your profile photo to the portfolio:
+
+1. Save your profile image as "profile.jpg" in the static/img/ directory
+2. The image should be square (recommended: 300x300px or larger)
+3. Supported formats: JPG, PNG, WebP
+4. The image will be automatically cropped to a circle in the header
+
+Current path for your image: static/img/profile.jpg
+
+The portfolio header is already configured to use /img/profile.jpg as the source.

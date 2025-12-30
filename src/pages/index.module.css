@@ -1,0 +1,465 @@
+/**
+ * CSS files with the .module.css suffix will be treated as CSS modules
+ * and scoped locally.
+ */
+
+.portfolioHeader {
+  padding: 4rem 0;
+  text-align: left;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.headerContent {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.profileImage {
+  flex-shrink: 0;
+}
+
+.profileImg {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  border: 4px solid white;
+  object-fit: cover;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.headerText {
+  flex: 1;
+}
+
+.name {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: white;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 300;
+  margin-bottom: 1rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.contact {
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.socialLinks {
+  display: flex;
+  gap: 1rem;
+}
+
+.socialLink {
+  color: white;
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 25px;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.socialLink:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: white;
+  transform: translateY(-2px);
+}
+
+/* Section styles */
+.about,
+.skills,
+.projects,
+.experience,
+.education,
+.blogs {
+  padding: 4rem 0;
+  background: white;
+}
+
+.about:nth-child(even),
+.skills:nth-child(even),
+.projects:nth-child(even),
+.experience:nth-child(even),
+.education:nth-child(even),
+.blogs:nth-child(even) {
+  background: #f8f9fa;
+}
+
+.about h2,
+.skills h2,
+.projects h2,
+.experience h2,
+.education h2,
+.blogs h2 {
+  color: #2c3e50;
+  font-size: 2.5rem;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.about p {
+  font-size: 1.2rem;
+  line-height: 1.8;
+  color: #555;
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+/* Skills section */
+.skillGroup {
+  margin-bottom: 3rem;
+}
+
+.skillGroup h3 {
+  color: #34495e;
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 2px solid #3498db;
+  padding-bottom: 0.5rem;
+}
+
+.skillTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.skillTag {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.skillTag:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+.skillGroup ul {
+  list-style: none;
+  padding: 0;
+}
+
+.skillGroup li {
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  border-left: 4px solid #3498db;
+}
+
+.skillGroup li strong {
+  color: #2c3e50;
+}
+
+/* Projects section */
+.projectList {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.project {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.project:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+}
+
+.project h3 {
+  color: #2c3e50;
+  margin-bottom: 1rem;
+}
+
+.project h3 a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.project h3 a:hover {
+  color: #3498db;
+}
+
+.project p {
+  color: #555;
+  line-height: 1.6;
+}
+
+/* Experience section */
+.company {
+  margin-bottom: 4rem;
+}
+
+.companyHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.companyHeader h3 {
+  color: #2c3e50;
+  font-size: 1.8rem;
+  margin: 0;
+}
+
+.location {
+  color: #7f8c8d;
+  font-weight: normal;
+  font-size: 1rem;
+}
+
+.company > p {
+  color: #555;
+  margin-bottom: 2rem;
+  font-style: italic;
+}
+
+.position {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.positionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.positionHeader h4 {
+  color: #34495e;
+  margin: 0;
+  font-size: 1.3rem;
+}
+
+.dates {
+  color: #3498db;
+  font-weight: 500;
+}
+
+.position ul {
+  list-style: none;
+  padding: 0;
+}
+
+.position li {
+  margin-bottom: 0.8rem;
+  color: #555;
+  line-height: 1.6;
+  position: relative;
+  padding-left: 1.5rem;
+}
+
+.position li:before {
+  content: "▹";
+  color: #3498db;
+  font-weight: bold;
+  position: absolute;
+  left: 0;
+}
+
+/* Education section */
+.educationItem {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.educationHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.educationHeader h3 {
+  color: #2c3e50;
+  margin: 0;
+}
+
+.educationItem .dates {
+  color: #3498db;
+  font-weight: 500;
+}
+
+.educationItem p {
+  color: #555;
+  margin-bottom: 0.5rem;
+}
+
+.location {
+  color: #7f8c8d;
+  font-size: 0.9rem;
+}
+
+.educationItem ul {
+  list-style: none;
+  padding: 0;
+}
+
+.educationItem li {
+  margin-bottom: 0.8rem;
+  color: #555;
+  line-height: 1.6;
+  position: relative;
+  padding-left: 1.5rem;
+}
+
+.educationItem li:before {
+  content: "▹";
+  color: #3498db;
+  font-weight: bold;
+  position: absolute;
+  left: 0;
+}
+
+/* Blogs section */
+.blogList {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.blogPost {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.blogPost:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+}
+
+.blogPost h3 {
+  margin-bottom: 0.5rem;
+}
+
+.blogPost h3 a {
+  color: #2c3e50;
+  text-decoration: none;
+}
+
+.blogPost h3 a:hover {
+  color: #3498db;
+}
+
+.blogDate {
+  color: #7f8c8d;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.blogExcerpt {
+  color: #555;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+.readMore {
+  color: #3498db;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.readMore:hover {
+  color: #2980b9;
+}
+
+.viewAll {
+  text-align: center;
+  margin-top: 3rem;
+}
+
+/* Responsive design */
+@media screen and (max-width: 768px) {
+  .headerContent {
+    flex-direction: column;
+    text-align: center;
+    gap: 1.5rem;
+  }
+
+  .name {
+    font-size: 2.5rem;
+  }
+
+  .title {
+    font-size: 1.3rem;
+  }
+
+  .socialLinks {
+    justify-content: center;
+  }
+
+  .companyHeader,
+  .positionHeader,
+  .educationHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .projectList,
+  .blogList {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media screen and (max-width: 996px) {
+  .portfolioHeader {
+    padding: 2rem 0;
+  }
+
+  .about,
+  .skills,
+  .projects,
+  .experience,
+  .education,
+  .blogs {
+    padding: 2rem 0;
+  }
+
+  .about h2,
+  .skills h2,
+  .projects h2,
+  .experience h2,
+  .education h2,
+  .blogs h2 {
+    font-size: 2rem;
+  }
+}

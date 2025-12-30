@@ -1,0 +1,90 @@
+facebook:
+  label: Facebook
+  permalink: /facebook
+  description: Facebook tag description
+
+hello:
+  label: Hello
+  permalink: /hello
+  description: Hello tag description
+
+docusaurus:
+  label: Docusaurus
+  permalink: /docusaurus
+  description: Docusaurus tag description
+
+hola:
+  label: Hola
+  permalink: /hola
+  description: Hola tag description
+
+# Custom tags for migrated blog posts
+enterprise:
+  label: Enterprise
+  permalink: /enterprise
+  description: Enterprise software development and architecture
+
+product:
+  label: Product
+  permalink: /product
+  description: Product development and management
+
+template:
+  label: Template
+  permalink: /template
+  description: Templates and documentation frameworks
+
+algorithms:
+  label: Algorithms
+  permalink: /algorithms
+  description: Algorithm design and analysis
+
+data-structures:
+  label: Data Structures
+  permalink: /data-structures
+  description: Data structures and their implementations
+
+DSA:
+  label: DSA
+  permalink: /dsa
+  description: Data Structures and Algorithms
+
+architecture:
+  label: Architecture
+  permalink: /architecture
+  description: System and software architecture
+
+high availability:
+  label: High Availability
+  permalink: /high-availability
+  description: High availability and resilient systems
+
+disaster recovery:
+  label: Disaster Recovery
+  permalink: /disaster-recovery
+  description: Disaster recovery and business continuity
+
+llm:
+  label: LLM
+  permalink: /llm
+  description: Large Language Models and AI
+
+data-science:
+  label: Data Science
+  permalink: /data-science
+  description: Data science and machine learning
+
+sliding-window:
+  label: Sliding Window
+  permalink: /sliding-window
+  description: Sliding window algorithmic technique
+
+two-pointer:
+  label: Two Pointer
+  permalink: /two-pointer
+  description: Two pointer algorithmic technique
+
+array:
+  label: Array
+  permalink: /array
+  description: Array data structures and algorithms
