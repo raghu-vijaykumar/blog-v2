@@ -2,12 +2,14 @@ import type {ReactNode} from 'react';
 import clsx from 'clsx';
 import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
+import useBaseUrl from '@docusaurus/useBaseUrl';
 import Layout from '@theme/Layout';
 import Heading from '@theme/Heading';
 
 import styles from './index.module.css';
 
 function PortfolioHeader() {
+  const profileImageUrl = useBaseUrl('img/profile.jpg');
   return (
     <header className={clsx('hero', styles.portfolioHeader)}>
       <div className="container">
@@ -15,7 +17,7 @@ function PortfolioHeader() {
           <div className={styles.profileImage}>
             {/* Replace 'profile.jpg' with your actual profile image path */}
             <img
-              src="/img/profile.jpg"
+              src={profileImageUrl}
               alt="Raghu Vijaykumar"
               className={styles.profileImg}
             />
