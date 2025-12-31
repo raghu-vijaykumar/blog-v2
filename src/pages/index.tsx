@@ -27,9 +27,6 @@ function PortfolioHeader() {
             <p className={styles.title}>
               Staff Software Engineer | Cloud, Data & AI
             </p>
-            <div className={styles.contact}>
-              raghu.dinka.vijaykumar@gmail.com
-            </div>
             <div className={styles.socialLinks}>
               <a href="https://github.com/raghu-vijaykumar" target="_blank" rel="noopener noreferrer" className={styles.socialLink}>
                 GitHub
@@ -52,12 +49,25 @@ function AboutSection() {
   return (
     <section className={styles.about}>
       <div className="container">
-        <Heading as="h2">About</Heading>
+        <Heading as="h2">About Me</Heading>
         <p>
-          Software Engineer with 9 years of experience building scalable cloud, distributed systems, and data platforms.
-          Currently leading AI/ML initiatives at Oracle's Healthcare AI team, previously drove enterprise analytics solutions at Equifax,
-          and built high-throughput systems at Boeing. Proven track record in designing resilient architectures, optimizing performance,
-          and driving AI/ML-powered innovation. Passionate about solving complex problems with clean, impactful solutions.
+          I'm a Staff Software Engineer with 9+ years of experience building large-scale cloud platforms, distributed systems, and data-driven applications across healthcare, fintech, aviation, and telecom domains.
+        </p>
+        <p>
+          My work spans Cloud (GCP, AWS, OCI), Data Engineering, and AI-powered systems, with a strong focus on designing resilient architectures, high-throughput pipelines, and automation that meaningfully reduces operational effort. I enjoy working close to complex systems—where performance, reliability, and correctness matter—and turning them into simple, maintainable solutions.
+        </p>
+        <p>
+          In recent roles, I've:
+        </p>
+        <ul>
+          <li>Designed and operated multi-cloud, high-availability platforms handling 100M+ daily transactions and $10M/day revenue</li>
+          <li>Built AI-assisted tools and agentic workflows that reduced hours of manual work to minutes</li>
+          <li>Led and mentored engineers while delivering cross-team initiatives with strong engineering standards</li>
+          <li>Scaled data ingestion and analytics pipelines processing 100TB+ datasets using Beam, Dataflow, streaming systems, and modern warehouses</li>
+          <li>Strengthened security, observability, and CI/CD practices across enterprise systems</li>
+        </ul>
+        <p>
+          Outside work, I actively build AI tools, automation CLIs, and experimental products, and I write about distributed systems and real-world engineering trade-offs on my blog. I'm driven by curiosity, clean design, and building systems that scale both technically and operationally.
         </p>
       </div>
     </section>
@@ -177,51 +187,46 @@ function EducationSection() {
 }
 
 function LatestBlogsSection() {
-  // All migrated blog posts - sorted by date (most recent first)
-  const latestPosts = [
+  // Blog posts data - easily maintainable format
+  // Update this array when you add new blog posts (keep most recent at top)
+  const blogPosts = [
     {
+      slug: 'using-ollama-for-note-generation-locally',
       title: 'Using Ollama for Note Generation Locally',
       date: '2024-08-26',
-      permalink: '/blog/2024/08/26/using-ollama-for-note-generation-locally',
       description: 'Using Ollama library to run and connect to models locally for generating readable and easy-to-understand notes from transcripts.'
     },
     {
+      slug: 'enterprise-product-things-to-consider',
       title: 'Enterprise Product - Things to consider',
       date: '2024-08-26',
-      permalink: '/blog/2024/08/26/enterprise-product-things-to-consider',
       description: 'Developing an enterprise product is a complex endeavour that demands meticulous planning and execution. Here\'s a comprehensive checklist that can serve as your roadmap to success.'
     },
     {
+      slug: 'ensuring-resiliency-high-availability-disaster-recovery',
       title: 'Ensuring Resiliency: High Availability and Disaster Recovery Strategies',
       date: '2024-08-26',
-      permalink: '/blog/2024/08/26/ensuring-resiliency-high-availability-disaster-recovery',
       description: 'High Availability (HA) and Disaster Recovery (DR) are critical strategies in cloud computing to ensure services are continuously available and resilient against failures.'
     },
     {
+      slug: 'product-template-documentation',
       title: 'Product Template - Documentation',
       date: '2024-08-26',
-      permalink: '/blog/2024/08/26/product-template-documentation',
       description: 'Tech Product Documentation Template serves as a comprehensive framework for organizing and communicating essential information about a technology product.'
     },
     {
+      slug: 'algorithmic-techniques',
       title: 'Algorithmic Techniques',
       date: '2024-08-26',
-      permalink: '/blog/2024/08/26/algorithmic-techniques',
       description: 'Algorithmic techniques are strategies used to design efficient algorithms for solving computational problems. Here are some of the most common and powerful algorithmic techniques.'
-    },
-    {
-      title: 'DSA - Sliding Window - (In Progress)',
-      date: '2024-08-26',
-      permalink: '/blog/2024/08/26/sliding-window',
-      description: 'The sliding window technique is a powerful approach used to solve a variety of problems, especially those involving subarrays or substrings.'
-    },
-    {
-      title: 'DSA - Two Pointer Approach - (In Progress)',
-      date: '2024-08-26',
-      permalink: '/blog/2024/08/26/two-pointer-approach',
-      description: 'The two-pointer approach is a powerful technique used to solve problems involving arrays or strings efficiently.'
     }
   ];
+
+  // Take only the first 5 posts (most recent)
+  const latestPosts = blogPosts.slice(0, 3).map(post => ({
+    ...post,
+    permalink: `/blog/${post.slug}`
+  }));
 
   return (
     <section className={styles.blogs}>
@@ -267,11 +272,19 @@ export default function Home(): ReactNode {
       description="Portfolio of Raghu Vijaykumar, Staff Software Engineer specializing in Cloud, Data & AI solutions">
       <PortfolioHeader />
       <main>
-        <AboutSection />
-        <SkillsSection />
+        <section className={styles.aboutAndBlogs}>
+          <div className="container">
+            <div className={styles.twoColumnLayout}>
+              <div className={styles.aboutColumn}>
+                <AboutSection />
+              </div>
+              <div className={styles.blogsColumn}>
+                <LatestBlogsSection />
+              </div>
+            </div>
+          </div>
+        </section>
         <ProjectsSection />
-        <EducationSection />
-        <LatestBlogsSection />
       </main>
     </Layout>
   );

@@ -81,8 +81,8 @@
 .experience,
 .education,
 .blogs {
-  padding: 4rem 0;
-  background: white;
+  padding: 2rem 0;
+  background: var(--ifm-background-color);
 }
 
 .about:nth-child(even),
@@ -91,7 +91,7 @@
 .experience:nth-child(even),
 .education:nth-child(even),
 .blogs:nth-child(even) {
-  background: #f8f9fa;
+  background: var(--ifm-color-emphasis-50);
 }
 
 .about h2,
@@ -100,19 +100,50 @@
 .experience h2,
 .education h2,
 .blogs h2 {
-  color: #2c3e50;
+  color: var(--ifm-heading-color);
   font-size: 2.5rem;
   margin-bottom: 2rem;
   text-align: center;
 }
 
 .about p {
-  font-size: 1.2rem;
   line-height: 1.8;
-  color: #555;
+  color: var(--ifm-color-emphasis-700);
+  text-align: left;
+}
+
+.about ul {
   max-width: 800px;
   margin: 0 auto;
-  text-align: center;
+  padding-left: 1.5rem;
+}
+
+.about ul li {
+  color: var(--ifm-color-emphasis-700);
+  line-height: 1.6;
+  margin-bottom: 0.5rem;
+}
+
+/* Two column layout for About and Blogs */
+.aboutAndBlogs {
+  padding: 2rem 0;
+  background: var(--ifm-background-color);
+}
+
+.twoColumnLayout {
+  display: flex;
+  gap: 4rem;
+  align-items: flex-start;
+}
+
+.aboutColumn {
+  flex: 1;
+  max-width: 60%;
+}
+
+.blogsColumn {
+  flex: 1;
+  max-width: 60%;
 }
 
 /* Skills section */
@@ -178,20 +209,22 @@
 }
 
 .project {
-  background: white;
+  background: var(--ifm-card-background-color);
   padding: 2rem;
   border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--ifm-global-shadow-lw);
+  border: 1px solid var(--ifm-color-emphasis-200);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .project:hover {
   transform: translateY(-5px);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--ifm-global-shadow-tl);
+  border-color: var(--ifm-color-emphasis-300);
 }
 
 .project h3 {
-  color: #2c3e50;
+  color: var(--ifm-heading-color);
   margin-bottom: 1rem;
 }
 
@@ -201,11 +234,11 @@
 }
 
 .project h3 a:hover {
-  color: #3498db;
+  color: var(--ifm-color-primary);
 }
 
 .project p {
-  color: #555;
+  color: var(--ifm-color-emphasis-700);
   line-height: 1.6;
 }
 
@@ -346,23 +379,18 @@
 
 /* Blogs section */
 .blogList {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2rem;
   margin-top: 2rem;
 }
 
 .blogPost {
-  background: white;
-  padding: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--ifm-color-emphasis-200);
 }
 
-.blogPost:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+.blogPost:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
 }
 
 .blogPost h3 {
@@ -370,35 +398,35 @@
 }
 
 .blogPost h3 a {
-  color: #2c3e50;
+  color: var(--ifm-heading-color);
   text-decoration: none;
 }
 
 .blogPost h3 a:hover {
-  color: #3498db;
+  color: var(--ifm-color-primary);
 }
 
 .blogDate {
-  color: #7f8c8d;
+  color: var(--ifm-color-emphasis-600);
   font-size: 0.9rem;
   margin-bottom: 1rem;
 }
 
 .blogExcerpt {
-  color: #555;
+  color: var(--ifm-color-emphasis-700);
   line-height: 1.6;
   margin-bottom: 1rem;
 }
 
 .readMore {
-  color: #3498db;
+  color: var(--ifm-color-primary);
   text-decoration: none;
   font-weight: 500;
   transition: color 0.3s ease;
 }
 
 .readMore:hover {
-  color: #2980b9;
+  color: var(--ifm-color-primary-dark);
 }
 
 .viewAll {
@@ -434,9 +462,18 @@
     gap: 0.5rem;
   }
 
-  .projectList,
-  .blogList {
+  .projectList {
     grid-template-columns: 1fr;
+  }
+
+  .twoColumnLayout {
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .aboutColumn,
+  .blogsColumn {
+    max-width: 100%;
   }
 }
 
