@@ -6,7 +6,7 @@ authors: [raghu-vijaykumar]
 date: 2024-08-26
 ---
 
-![Enterprise Product - Things to consider](./assets/cover.jpeg)
+![Enterprise Product - Things to consider](./cover.jpeg)
 
 Developing an enterprise product is a complex endeavour that demands meticulous planning and execution. Here's a comprehensive checklist that can serve as your roadmap to success. Whether you're launching a web server or a multifaceted application, these steps are critical for ensuring business continuity
 

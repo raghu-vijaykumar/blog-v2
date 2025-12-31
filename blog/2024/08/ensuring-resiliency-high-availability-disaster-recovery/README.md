@@ -6,7 +6,7 @@ authors: [raghu-vijaykumar]
 date: 2024-08-26
 ---
 
-![Ensuring Resiliency: High Availability and Disaster Recovery Strategies](./assets/ha-dr-ha-dr.png)
+![Ensuring Resiliency: High Availability and Disaster Recovery Strategies](./cover.png)
 
 **High Availability (HA)** and **Disaster Recovery (DR)** are critical strategies in cloud computing to ensure services are continuously available and resilient against failures.
 
@@ -16,7 +16,7 @@ date: 2024-08-26
 
 Most of the services can be differentiated as compute and storage; these are the two key components when building resilient software architectures. Here is a generic diagram for HA and DR.
 
-![Generic HA & DR](/img/blog-assets/how-to-ha-and-dr/ha-dr-ha-dr.png)
+![Generic HA & DR](./ha-dr-ha-dr.png)
 
 ### HA Key Components
 
@@ -32,7 +32,7 @@ Most of the services can be differentiated as compute and storage; these are the
 
 ## Handling Compute Failure
 
-![Compute Failure](/img/blog-assets/how-to-ha-and-dr/ha-dr-compute-ha-dr.png)
+![Compute Failure](./ha-dr-compute-ha-dr.png)
 
 ### Regional Failure
 
@@ -72,7 +72,7 @@ When it comes to cloud services, it's essential to select the right tools to max
 
 Storage can encompass various types, such as disks, databases, and object stores. Let's consider a single replication setup for a storage mechanism.
 
-![Storage Failure](/img/blog-assets/how-to-ha-and-dr/ha-dr-storage-ha-dr.png)
+![Storage Failure](./ha-dr-storage-ha-dr.png)
 
 ### Setup
 
@@ -99,7 +99,7 @@ Storage can encompass various types, such as disks, databases, and object stores
 
 This simplified version of disaster recovery highlights the importance of backups and replication. More complex systems might involve both zonal and cross-regional replication to provide redundancy.
 
-![Zonal and Cross Region Replication](/img/blog-assets/how-to-ha-and-dr/ha-dr-2r-storage.png)
+![Zonal and Cross Region Replication](./ha-dr-2r-storage.png)
 
 ## Review of GCP Storage Solutions
 

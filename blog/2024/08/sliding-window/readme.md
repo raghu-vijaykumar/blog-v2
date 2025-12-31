@@ -4,9 +4,10 @@ title: 'DSA - Sliding Window - (In Progress)'
 tags: ["algorithms", "data-structures", "sliding-window", "DSA", "array"]
 authors: [raghu-vijaykumar]
 date: 2024-08-26
+draft: true
 ---
 
-![DSA - Sliding Window - (In Progress)](./assets/cover.png)
+![DSA - Sliding Window - (In Progress)](./cover.png)
 
 The sliding window technique is a powerful approach used to solve a variety of problems, especially those involving subarrays or substrings. Here are the key characteristics and criteria to identify if a problem can be effectively solved using the sliding window technique:
 

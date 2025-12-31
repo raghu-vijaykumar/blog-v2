@@ -6,7 +6,7 @@ authors: [raghu-vijaykumar]
 date: 2024-08-26
 ---
 
-![Algorithmic Techniques](./assets/cover.png)
+![Algorithmic Techniques](./cover.png)
 
 Algorithmic techniques are strategies used to design efficient algorithms for solving computational problems. Here are some of the most common and powerful algorithmic techniques:
 

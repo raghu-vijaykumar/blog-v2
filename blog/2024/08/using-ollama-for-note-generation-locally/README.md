@@ -7,7 +7,7 @@ date: 2024-08-26
 description: "Using Ollama library to run and connect to models locally for generating readable and easy-to-understand notes."
 ---
 
-![Using Ollama for Note Generation Locally](./assets/cover.png)
+![Using Ollama for Note Generation Locally](./cover.png)
 
 We will explore how to use the Ollama library to run and connect to models locally for generating readable and easy-to-understand notes. We will walk through the process of setting up the environment, running the code, and comparing the performance and quality of different models like llama3:8b, phi3:14b, llava:34b, and llama3:70b.
 

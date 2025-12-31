@@ -6,7 +6,7 @@ authors: [raghu-vijaykumar]
 date: 2024-08-26
 ---
 
-![DSA - Two Pointer Approach - (In Progress)](./assets/cover.png)
+![DSA - Two Pointer Approach - (In Progress)](./cover.png)
 
 The two-pointer approach is a powerful technique used to solve problems involving arrays or strings. Here are the key characteristics and criteria to identify if a problem can be effectively solved using the two-pointer approach:
 
