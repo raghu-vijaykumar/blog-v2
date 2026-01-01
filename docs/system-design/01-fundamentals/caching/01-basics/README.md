@@ -152,6 +152,3 @@ public User getUser(String userId) {
 ❌ **"Cache statistics don't matter"**
 - Reality: Hit/miss ratios are crucial for tuning and monitoring cache effectiveness
 
-## Navigation
-
-⬅️ [Back to Root](../README.md)

@@ -144,7 +144,3 @@ assert cache.get("b") == "2";
 ❌ **"Bigger cache is always better"**
 - Reality: Large caches increase memory pressure and GC pauses
 
-## Navigation
-
-⬅️ [Previous: 02 – Real-world](../02-real-world/README.md)
-➡️ [Next: 04 – Advanced](../04-advanced/README.md)

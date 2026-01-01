@@ -127,7 +127,3 @@ service.warmCache(Arrays.asList("user:1", "user:2"));
 ❌ **"One cache fits all scenarios"**
 - Reality: Different data types need different caching strategies
 
-## Navigation
-
-⬅️ [Previous: 01 – Basics](../01-basics/README.md)
-➡️ [Next: 03 – Internals](../03-internals/README.md)

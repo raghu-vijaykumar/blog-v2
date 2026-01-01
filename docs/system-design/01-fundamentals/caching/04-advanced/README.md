@@ -129,8 +129,3 @@ cluster.put("key", "value");
 
 ❌ **"Distributed caching eliminates database load"**
 - Reality: Cache misses, invalidation storms, and coordination still hit the database
-
-## Navigation
-
-⬅️ [Previous: 03 – Internals](../03-internals/README.md)
-➡️ [Next: 05 – Failures](../05-failures/README.md)

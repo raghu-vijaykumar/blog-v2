@@ -151,7 +151,3 @@ cache.getWithCircuitBreaker("existing-key", () -> "fallback");
 ❌ **"Tests don't need to cover failure scenarios"**
 - Reality: Failure modes are where systems break - test them rigorously
 
-## Navigation
-
-⬅️ [Previous: 04 – Advanced](../04-advanced/README.md)
-➡️ [Back to Root](../README.md)

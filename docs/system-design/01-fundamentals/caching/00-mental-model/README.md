@@ -137,8 +137,3 @@ assert cache.get("key").equals("new");
 
 ❌ **"Caching is always beneficial"**
 - Reality: Wrong caching can hurt performance (cache misses, stale data)
-
-## Navigation
-
-⬅️ [Back to Root](../README.md)
-➡️ [Next: 01 – Basics](../01-basics/README.md)
