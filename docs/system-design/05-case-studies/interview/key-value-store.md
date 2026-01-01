@@ -97,12 +97,12 @@ Metadata: {"version": [1,2,3], "ttl": null}
 
 Core endpoints for a REST API (or SDK):
 
-- PUT /kv/{key} - Body: {value}, Response: 200 OK or 409 Conflict (version mismatch).
-- GET /kv/{key} - Response: 200 {value} or 404 Not Found, with metadata headers for versioning.
+- `PUT /kv/{key}` - Body: `{value}`, Response: 200 OK or 409 Conflict (version mismatch).
+- `GET /kv/{key}` - Response: 200 `{value}` or 404 Not Found, with metadata headers for versioning.
 
 Sample request/response:
 
-PUT /kv/user:123:profile
+`PUT /kv/user:123:profile`
 ```
 Content-Type: application/json
 Body: {"name": "Alice", "age": 30}
@@ -110,7 +110,7 @@ Body: {"name": "Alice", "age": 30}
 
 Response: 200 OK
 
-GET /kv/user:123:profile
+`GET /kv/user:123:profile`
 ```
 Response: {"name": "Alice", "age": 30}
 Headers: X-Version: [1,0,0]

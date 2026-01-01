@@ -118,8 +118,9 @@ graph TD
 - **Submit Seed URLs**: POST /api/crawl/seeds
   - Request: `{ "urls": ["http://example.com"], "priority": 8 }`
   - Response: `{ "job_id": "abc", "status": "accepted" }`
-- **Get Crawl Status**: GET /api/crawl/status/{job_id}
-- **Fetch Results**: GET /api/crawl/results?query=params (for crawled data access)
+- **Get Crawl Status**: `GET /api/crawl/status/{job_id}`
+  - Response: `{ "job_id": "abc", "status": "in_progress", "urls_crawled": 1000 }`
+- **Fetch Results**: `GET /api/crawl/results?query=params` (for crawled data access)
 
 ## Scalability & Bottlenecks
 

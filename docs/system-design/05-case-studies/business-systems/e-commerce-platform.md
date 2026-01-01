@@ -87,12 +87,11 @@ graph TD
 ### API Design
 RESTful APIs with GraphQL for complex queries:
 
-- **POST /api/v1/users** - User registration: `{"email": "user@example.com", "password": "hash"}` → `{"userId": "123", "token": "jwt"}`
-- **GET /api/v1/products?search=jeans&filters=brand,color** - Product search with facets
-- **POST /api/v1/cart/{userId}/items** - Add to cart: `{"productId": "456", "quantity": 2}` → `{"cartId": "789", "total": 150.00}`
-- **POST /api/v1/checkout** - Process order: `{"cartId": "789", "paymentMethod": "card"}` → `{"orderId": "ORD001", "status": "confirmed"}`
-- **GET /api/v1/orders/{userId}** - Order history with status and tracking
-
+- `POST /api/v1/users` - User registration: `{"email": "user@example.com", "password": "hash"}` → `{"userId": "123", "token": "jwt"}`
+- `GET /api/v1/products?search=jeans&filters=brand,color` - Product search with facets
+- `POST /api/v1/cart/{userId}/items` - Add to cart: `{"productId": "456", "quantity": 2}` → `{"cartId": "789", "total": 150.00}`
+- `POST /api/v1/checkout` - Process order: `{"cartId": "789", "paymentMethod": "card"}` → `{"orderId": "ORD001", "status": "confirmed"}`
+- `GET /api/v1/orders/{userId}` - Order history with status and tracking
 ^[APIs use JWT for authentication, support pagination for large lists.]
 
 ### Detailed Design

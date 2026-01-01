@@ -109,7 +109,7 @@ Core RESTful endpoints:
 - **Upload Object**: `PUT /bucket/{bucket_name}/{object_name}`  
   Headers: Authorization, Content-Type, Content-Length, x-amz-meta-* (custom metadata)  
   Body: Object data  
-  Response: 201 Created, Location: /bucket/{bucket_name}/{object_name}
+  Response: 201 Created, `Location: /bucket/{bucket_name}/{object_name}`
 
 - **Download Object**: `GET /bucket/{bucket_name}/{object_name}`  
   Headers: Authorization, Range (for partial)  

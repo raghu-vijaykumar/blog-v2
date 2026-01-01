@@ -1,29 +1,8 @@
-+++
-title= "Social Media Feed Timeline"
-tags = [ "system-design", "software-architecture", "interview", "social-media", "feed", "timeline", "fan-out" ]
-author = "Me"
-showToc = true
-TocOpen = false
-draft = false
-hidemeta = false
-comments = false
-disableShare = false
-disableHLJS = false
-hideSummary = false
-searchHidden = true
-ShowReadingTime = true
-ShowBreadCrumbs = true
-ShowPostNavLinks = true
-ShowWordCount = true
-ShowRssButtonInSectionTermList = true
-UseHugoToc = true
-weight= 37
-bookFlatSection= true
-+++
-
+---
+sidebar_title: Social Media Feed Timline
 ---
 
-## Design Social Media Feed Timeline
+# Social Media Feed Timeline
 
 ### Problem Statement
 Design a scalable social media feed/timeline system that generates personalized, real-time content streams for users. The system must efficiently combine posts from followed users, ranked by relevance, while handling massive concurrency and providing sub-second response times for feed refreshes.
@@ -83,11 +62,11 @@ graph TD
 ### API Design
 RESTful and real-time WebSocket APIs:
 
-- **POST /api/v1/posts** - Create post: `{"content": "text", "media": ["url1"], "visibility": "public"}` → `{"postId": "post123", "timestamp": 1234567890}`
-- **GET /api/v1/feed?cursor=abc123&limit=50** - Get personalized feed with pagination
-- **WebSocket /feed/stream** - Real-time feed updates: `{"type": "new_post", "data": {...}}`
-- **POST /api/v1/posts/{postId}/engage** - Like/share/comment: `{"type": "like"}` → engagement tracking
-- **GET /api/v1/users/{userId}/posts** - User's posts and timeline
+- `POST /api/v1/posts` - Create post: `{"content": "text", "media": ["url1"], "visibility": "public"}` → `{"postId": "post123", "timestamp": 1234567890}`
+- `GET /api/v1/feed?cursor=abc123&limit=50` - Get personalized feed with pagination
+- `WebSocket /feed/stream` - Real-time feed updates: `{"type": "new_post", "data": {...}}`
+- `POST /api/v1/posts/{postId}/engage` - Like/share/comment: `{"type": "like"}` → engagement tracking
+- `GET /api/v1/users/{userId}/posts` - User's posts and timeline
 
 ^[APIs support OAuth 2.0 authentication and cursor-based pagination for infinite scrolling.]
 

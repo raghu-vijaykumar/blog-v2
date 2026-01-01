@@ -92,7 +92,7 @@ Failure handling: Retry propagation with exponential backoff. Concurrency: Threa
 
 ### B. Data Structures & Configuration Parameters
 - **Version Vector**: `Map<ReplicaId, Integer>` tracking logical clocks per replica.
-- **Operation Log**: Append-only list of {operation, version, timestamp}.
+- **Operation Log**: Append-only list of `{operation, version, timestamp}`.
 - **History Graph**: Adjacency list for commit dependencies.
 - **Tunable Parameters**:
   - `maxHistorySize` = 1000 (limit retained versions for memory)

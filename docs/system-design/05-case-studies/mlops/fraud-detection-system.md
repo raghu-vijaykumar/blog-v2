@@ -1,29 +1,8 @@
-+++
-title= "Fraud Detection System"
-tags = [ "system-design", "software-architecture", "interview", "fraud-detection", "machine-learning", "real-time", "streaming" ]
-author = "Me"
-showToc = true
-TocOpen = false
-draft = false
-hidemeta = false
-comments = false
-disableShare = false
-disableHLJS = false
-hideSummary = false
-searchHidden = true
-ShowReadingTime = true
-ShowBreadCrumbs = true
-ShowPostNavLinks = true
-ShowWordCount = true
-ShowRssButtonInSectionTermList = true
-UseHugoToc = true
-weight= 40
-bookFlatSection= true
-+++
-
+---
+sidebar_title: Fraud Detection System
 ---
 
-## Design Fraud Detection System
+# Fraud Detection System
 
 ### Problem Statement
 Design a real-time fraud detection system that analyzes transaction streams for suspicious patterns. The system must process massive volumes of financial events, apply ML models for anomaly detection, and trigger alerts while maintaining low false positive rates and ensuring high availability for transaction processing.
@@ -84,12 +63,11 @@ graph TD
 ### API Design
 Event-driven APIs with synchronous scoring:
 
-- **POST /api/v1/transactions/score** - Score transaction: `{"amount": 500, "merchant": "amazon", "user": {...}, "device": {...}}` → `{"risk_score": 0.85, "decision": "review", "reasons": ["unusual_location"]}`
-- **POST /api/v1/alerts/{alertId}/outcome** - Verify fraud outcome: `{"outcome": "confirmed_fraud", "notes": "stolen_card"}` → feedback loop trigger
-- **GET /api/v1/models/performance** - Get model metrics with false positive/negative rates
-- **PUT /api/v1/rules/{ruleId}** - Update fraud rules: `{"condition": "amount > 1000", "action": "block", "priority": 1}` → dynamic rule management
-- **WebSocket /alerts/stream** - Real-time alert streaming for monitoring teams
-
+- `POST /api/v1/transactions/score` - Score transaction: `{"amount": 500, "merchant": "amazon", "user": {...}, "device": {...}}` → `{"risk_score": 0.85, "decision": "review", "reasons": ["unusual_location"]}`
+- `POST /api/v1/alerts/{alertId}/outcome` - Verify fraud outcome: `{"outcome": "confirmed_fraud", "notes": "stolen_card"}` → feedback loop trigger
+- `GET /api/v1/models/performance` - Get model metrics with false positive/negative rates
+- `PUT /api/v1/rules/{ruleId}` - Update fraud rules: `{"condition": "amount > 1000", "action": "block", "priority": 1}` → dynamic rule management
+- `WebSocket /alerts/stream` - Real-time alert streaming for monitoring teams
 ^[APIs use API keys and rate limiting to prevent abuse.]
 
 ### Detailed Design

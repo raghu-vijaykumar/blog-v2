@@ -83,12 +83,12 @@ graph TD
 ### API Design
 RESTful APIs and async WebSocket for monitoring:
 
-- **POST /api/v1/jobs** - Submit job: `{"name": "etl_job", "schedule": "0 */12 * * *", "dependencies": ["job1"], "resources": {"cpu": 2, "memory": "4GB"}}` → `{"jobId": "job123"}`
-- **GET /api/v1/jobs/{jobId}/status** - Get job status with execution history
-- **PUT /api/v1/jobs/{jobId}/pause** - Pause/resume job execution
-- **GET /api/v1/workers** - Get worker pool status and resource utilization
-- **WebSocket /jobs/status** - Real-time job completion notifications
-- **POST /api/v1/workflows** - Submit DAG workflow: `{"nodes": [...], "edges": [...], "schedules": {...}}` → workflow orchestration
+- `POST /api/v1/jobs` - Submit job: `{"name": "etl_job", "schedule": "0 */12 * * *", "dependencies": ["job1"], "resources": {"cpu": 2, "memory": "4GB"}}` → `{"jobId": "job123"}`
+- `GET /api/v1/jobs/{jobId}/status` - Get job status with execution history
+- `PUT /api/v1/jobs/{jobId}/pause` - Pause/resume job execution
+- `GET /api/v1/workers` - Get worker pool status and resource utilization
+- `WebSocket /jobs/status` - Real-time job completion notifications
+- `POST /api/v1/workflows` - Submit DAG workflow: `{"nodes": [...], "edges": [...], "schedules": {...}}` → workflow orchestration
 
 ^[APIs support OAuth authentication and role-based access control for job submission.]
 

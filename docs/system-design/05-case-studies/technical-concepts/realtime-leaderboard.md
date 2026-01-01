@@ -71,8 +71,8 @@ flowchart TD
 
 ## API Design
 - `POST /v1/scores`: Update user score (params: user_id, points). Accessible only by game servers.
-- `GET /v1/scores`: Retrieve top 10 players. Response: List of {user_id, username, rank, score}.
-- `GET /v1/scores/{user_id}`: Retrieve specific user's rank/score/nearby players. Response: {user_info, nearby_users}.
+- `GET /v1/scores`: Retrieve top 10 players. Response: List of `{user_id, username, rank, score}`.
+- `GET /v1/scores/{user_id}`: Retrieve specific user's rank/score/nearby players. Response: `{user_info, nearby_users}`.
 
 ## Detailed Design
 - **Game Service**: Validates wins and calls Leaderboard Service to update scores.

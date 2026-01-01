@@ -1,27 +1,9 @@
-﻿+++
-title= "Google Maps"
-tags = [ "system-design", "software-architecture", "interview", "google-maps" ]
-author = "Me"
-showToc = true
-TocOpen = false
-draft = false
-hidemeta = false
-comments = false
-disableShare = false
-disableHLJS = false
-hideSummary = false
-searchHidden = true
-ShowReadingTime = true
-ShowBreadCrumbs = true
-ShowPostNavLinks = true
-ShowWordCount = true
-ShowRssButtonInSectionTermList = true
-UseHugoToc = true
-weight= 17
-bookFlatSection= true
-+++
+﻿---
+sidebar_title: Google Maps System Design
+---
 
-## **Design a Location-Based Mapping and Navigation Service**
+# Google Maps System Design
+
 
 ### Problem Statement
 Design a scalable location-based service that handles real-time user location updates, provides accurate navigation with estimated time of arrival (ETA), and renders maps efficiently on mobile and web clients, supporting billions of daily active users with global coverage.
@@ -90,17 +72,17 @@ graph TD
 ### API Design
 Core endpoints exposed via RESTful APIs:
 
-- **Location Updates**: POST /v1/locations  
+- **Location Updates**: `POST /v1/locations`  
   Body: `{ "user_id": "string", "locations": [{"lat": float, "lng": float, "timestamp": int}] }`  
   Batches updates for efficiency.
 
-- **Navigation Request**: GET /v1/navigate?origin=address&destination=address&mode=driving  
+- **Navigation Request**: `GET /v1/navigate?origin=address&destination=address&mode=driving`  
   Response: `{ "status": "ok", "steps": [...], "eta": "1h 30m", "distance": "50km", "polyline": "encoded_string" }`
 
-- **Map Tiles**: GET /v1/tiles/{geohash}?zoom=12  
+- **Map Tiles**: `GET /v1/tiles/{geohash}?zoom=12`
   Returns tile image/vector data.
 
-- **Geocoding**: GET /v1/geocode?address=string  
+- **Geocoding**: `GET /v1/geocode?address=string`  
   Response: `{ "lat": 37.422, "lng": -122.084 }`
 
 ### Detailed Design

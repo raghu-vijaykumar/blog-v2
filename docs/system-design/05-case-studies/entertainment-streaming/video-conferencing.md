@@ -84,12 +84,11 @@ graph TD
 ### API Design
 WebSocket-based signaling with REST APIs:
 
-- **POST /api/v1/rooms** - Create room: `{"name": "Team Meeting", "max_participants": 50}` → `{"roomId": "abc123", "join_url": "https://vc.com/join/abc123"}`
-- **POST /api/v1/rooms/{roomId}/join** - Join room: `{"userId": "user1", "stream_capabilities": {"video": true, "audio": true}}` → WebSocket connection established
-- **WebSocket events**: `{"type": "offer", "sdp": "..."}`, `{"type": "ice_candidate", "candidate": "..."}` for WebRTC signaling
-- **POST /api/v1/rooms/{roomId}/record** - Start recording: `{"duration_minutes": 60}` → `{"recordingId": "rec001", "status": "started"}`
-- **GET /api/v1/rooms/{roomId}/chat** - Fetch chat messages with pagination
-
+- `POST /api/v1/rooms` - Create room: `{"name": "Team Meeting", "max_participants": 50}` → `{"roomId": "abc123", "join_url": "https://vc.com/join/abc123"}`
+- `POST /api/v1/rooms/{roomId}/join` - Join room: `{"userId": "user1", "stream_capabilities": {"video": true, "audio": true}}` → WebSocket connection established
+- `WebSocket events`: `{"type": "offer", "sdp": "..."}`, `{"type": "ice_candidate", "candidate": "..."}` for WebRTC signaling
+- `POST /api/v1/rooms/{roomId}/record` - Start recording: `{"duration_minutes": 60}` → `{"recordingId": "rec001", "status": "started"}`
+- `GET /api/v1/rooms/{roomId}/chat` - Fetch chat messages with pagination
 ^[APIs use JWT authentication, WebSockets maintain persistent connections for real-time signaling.]
 
 ### Detailed Design

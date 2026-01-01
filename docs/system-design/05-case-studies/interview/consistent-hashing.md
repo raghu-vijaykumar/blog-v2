@@ -122,7 +122,7 @@ CREATE TABLE virtual_nodes (
 
 ### Core Endpoints
 
-#### GET /cache/{key}
+#### `GET /cache/{key}`
 **Request:**
 ```
 GET /cache/{key}
@@ -137,7 +137,7 @@ GET /cache/{key}
 }
 ```
 
-#### PUT /cache/{key}
+#### `PUT /cache/{key}`
 **Request:**
 ```
 PUT /cache/{key}
@@ -157,7 +157,7 @@ Content-Type: application/json
 }
 ```
 
-#### DELETE /cache/{key}
+#### `DELETE /cache/{key}`
 
 **Request:**
 ```

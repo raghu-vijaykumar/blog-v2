@@ -87,12 +87,12 @@ graph TD
 ### API Design
 RESTful and streaming APIs:
 
-- **GET /api/v1/stream/{songId}?quality=320** - Audio streaming: Returns chunked audio data with range headers for seeking
-- **POST /api/v1/playlists** - Create playlist: `{"name": "Workout Mix", "songs": ["song1", "song2"]}` → `{"playlistId": "pl123"}`
-- **GET /api/v1/recommendations/{userId}** - Get recommendations based on listening history
-- **POST /api/v1/search** - Search: `{"query": "rock 80s", "type": "song,artist,album"}` → paginated results
-- **PUT /api/v1/playback/progress** - Update progress: `{"songId": "song1", "position": 45, "deviceId": "mobile"}`
-- **WebSocket /status/{userId}** - Real-time updates: Friend activity, new releases
+- `GET /api/v1/stream/{songId}?quality=320` - Audio streaming: Returns chunked audio data with range headers for seeking
+- `POST /api/v1/playlists` - Create playlist: `{"name": "Workout Mix", "songs": ["song1", "song2"]}` → `{"playlistId": "pl123"}`
+- `GET /api/v1/recommendations/{userId}` - Get recommendations based on listening history
+- `POST /api/v1/search` - Search: `{"query": "rock 80s", "type": "song,artist,album"}` → paginated results
+- `PUT /api/v1/playback/progress` - Update progress: `{"songId": "song1", "position": 45, "deviceId": "mobile"}`
+- `WebSocket /status/{userId}` - Real-time updates: Friend activity, new releases
 
 ^[APIs use adaptive bitrate selection and support resumable downloads.]
 

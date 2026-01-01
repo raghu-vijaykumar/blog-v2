@@ -84,12 +84,11 @@ graph TD
 ### API Design
 Real-time WebSocket and REST APIs:
 
-- **POST /api/v1/matchmaking/join** - Join matchmaking queue: `{"game_mode": "ranked", "skill_rating": 1500, "region": "us-west"}` → `{"queue_id": "q123", "estimated_wait": 45}`
-- **WebSocket /game/{sessionId}** - Game state synchronization: Send actions `{"type": "move", "x": 10, "y": 20}`; receive updates `{"players": [...], "events": [...]}`
-- **GET /api/v1/leaderboard/global?game=csgo** - Get leaderboard: Paginated rankings with player stats
-- **POST /api/v1/tournaments/create** - Create tournament: `{"name": "Summer Championship", "rules": {...}, "prizes": 50000}` → tournament orchestration
-- **PUT /api/v1/players/{playerId}/stats** - Update player stats: Atomic increments for performance tracking
-
+- `POST /api/v1/matchmaking/join` - Join matchmaking queue: `{"game_mode": "ranked", "skill_rating": 1500, "region": "us-west"}` → `{"queue_id": "q123", "estimated_wait": 45}`
+- `WebSocket /game/{sessionId}` - Game state synchronization: Send actions `{"type": "move", "x": 10, "y": 20}`; receive updates `{"players": [...], "events": [...]}`
+- `GET /api/v1/leaderboard/global?game=csgo` - Get leaderboard: Paginated rankings with player stats
+- `POST /api/v1/tournaments/create` - Create tournament: `{"name": "Summer Championship", "rules": {...}, "prizes": 50000}` → tournament orchestration
+- `PUT /api/v1/players/{playerId}/stats` - Update player stats: Atomic increments for performance tracking
 ^[APIs use JWT tokens for authentication and include rate limiting for abuse prevention.]
 
 ### Detailed Design

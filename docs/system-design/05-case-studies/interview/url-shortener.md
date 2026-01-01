@@ -74,9 +74,9 @@ graph TD
 ### API Design
 RESTful endpoints for core operations:
 
-- **POST /api/v1/shorten** - Shorten URL. Request: `{"longUrl": "https://example.com/very/long/url"}`; Response: `{"shortUrl": "http://short.ly/AbCdEf7", "status": "success"}`.
-- **GET /api/v1/{shortUrl}** - Redirect short URL. Response: HTTP 301 redirect to long URL or 404 if invalid.
-- **GET /api/v1/analytics/{shortUrl}** - Optional analytics. Response: `{"hits": 12345, "created": "2023-01-01"}`. ^[Assumed authentication via API key.]
+- `POST /api/v1/shorten` - Shorten URL. Request: `{"longUrl": "https://example.com/very/long/url"}`; Response: `{"shortUrl": "http://short.ly/AbCdEf7", "status": "success"}`.
+- `GET /api/v1/{shortUrl}` - Redirect short URL. Response: HTTP 301 redirect to long URL or 404 if invalid.
+- `GET /api/v1/analytics/{shortUrl}` - Optional analytics. Response: `{"hits": 12345, "created": "2023-01-01"}`. ^[Assumed authentication via API key.]
 
 ^[APIs support JSON payloads; redirects use HTTP 301 for permanence.]
 

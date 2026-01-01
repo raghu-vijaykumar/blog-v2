@@ -91,12 +91,11 @@ graph TD
 ### API Design
 Webhook and REST APIs for platform integration:
 
-- **POST /api/v1/content/moderate** - Submit content for moderation: `{"content_id": "c123", "type": "text", "content": "text here", "metadata": {...}}` → `{"decision": "allow", "score": 0.15, "flags": []}`
-- **GET /api/v1/moderation/queue?priority=high** - Get review items for moderators: Paginated queue with content and context
-- **POST /api/v1/moderation/review** - Submit human review: `{"content_id": "c123", "decision": "block", "reason": "hate_speech", "severity": "high"}` → queue update and enforcement
-- **PUT /api/v1/policies/{policyId}** - Update moderation rules: `{"rules": [...], "thresholds": {...}}` → rule deployment
-- **GET /api/v1/analytics/moderation** - Get moderation metrics: Detection rates, false positives, queue performance
-
+- `POST /api/v1/content/moderate` - Submit content for moderation: `{"content_id": "c123", "type": "text", "content": "text here", "metadata": {...}}` → `{"decision": "allow", "score": 0.15, "flags": []}`
+- `GET /api/v1/moderation/queue?priority=high` - Get review items for moderators: Paginated queue with content and context
+- `POST /api/v1/moderation/review` - Submit human review: `{"content_id": "c123", "decision": "block", "reason": "hate_speech", "severity": "high"}` → queue update and enforcement
+- `PUT /api/v1/policies/{policyId}` - Update moderation rules: `{"rules": [...], "thresholds": {...}}` → rule deployment
+- `GET /api/v1/analytics/moderation` - Get moderation metrics: Detection rates, false positives, queue performance
 ^[APIs use API keys for platform authentication and support webhook callbacks for asynchronous results.]
 
 ### Detailed Design

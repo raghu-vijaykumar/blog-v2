@@ -1,29 +1,8 @@
-+++
-title= "Collaborative Document Editing"
-tags = [ "system-design", "software-architecture", "interview", "collab", "real-time", "operational-transform" ]
-author = "Me"
-showToc = true
-TocOpen = false
-draft = false
-hidemeta = false
-comments = false
-disableShare = false
-disableHLJS = false
-hideSummary = false
-searchHidden = true
-ShowReadingTime = true
-ShowBreadCrumbs = true
-ShowPostNavLinks = true
-ShowWordCount = true
-ShowRssButtonInSectionTermList = true
-UseHugoToc = true
-weight= 34
-bookFlatSection= true
-+++
-
+---
+sidebar_title: Collaborative Document Editing
 ---
 
-## Design Collaborative Document Editing
+# Collaborative Document Editing
 
 ### Problem Statement
 Design a real-time collaborative document editing platform where multiple users can simultaneously edit the same document. The system must handle operational conflicts, maintain consistency across all users, and provide low-latency synchronization while supporting rich text formatting, comments, and version history.
@@ -84,13 +63,12 @@ graph TD
 ### API Design
 WebSocket-based real-time sync with REST APIs:
 
-- **POST /api/v1/documents** - Create document: `{"title": "Team Report", "content": "initial content"}` → `{"documentId": "doc123", "sessionToken": "abc..."}}`
-- **WebSocket /sync/{documentId}** - Real-time sync: Send operations like `{"type": "insert", "position": 10, "text": "hello"}`
-- **GET /api/v1/documents/{documentId}/versions** - Get version history with diffs
-- **POST /api/v1/documents/{documentId}/share** - Share with users: `{"email": "user@domain.com", "permission": "edit"}` → share token created
-- **GET /api/v1/documents/{documentId}/comments** - Fetch comments with position mapping
-- **WebSocket receipts**: Receive transformed operations from server for all connected clients
-
+- `POST /api/v1/documents` - Create document: `{"title": "Team Report", "content": "initial content"}` → `{"documentId": "doc123", "sessionToken": "abc..."}}`
+- `WebSocket /sync/{documentId}` - Real-time sync: Send operations like `{"type": "insert", "position": 10, "text": "hello"}`
+- `GET /api/v1/documents/{documentId}/versions` - Get version history with diffs
+- `POST /api/v1/documents/{documentId}/share` - Share with users: `{"email": "user@domain.com", "permission": "edit"}` → share token created
+- `GET /api/v1/documents/{documentId}/comments` - Fetch comments with position mapping
+- `WebSocket receipts`: Receive transformed operations from server for all connected clients
 ^[APIs support operational transformation acknowledgments and error recovery.]
 
 ### Detailed Design

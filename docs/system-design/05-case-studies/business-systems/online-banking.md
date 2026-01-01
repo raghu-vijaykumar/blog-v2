@@ -85,12 +85,12 @@ graph TD
 ### API Design
 Secure REST APIs with OAuth2 and MFA:
 
-- **POST /api/v1/auth/login** - Authentication: `{"username": "user", "password": "hash", "device_fingerprint": "..."}` → MFA challenge or JWT token
-- **GET /api/v1/accounts/{accountId}/balance** - Get balance: Returns current balance with last updated timestamp
-- **POST /api/v1/transfers** - Fund transfer: `{"fromAccount": "123", "toAccount": "456", "amount": 100.00, "memo": "Rent"}` → `{"transactionId": "txn_789", "status": "pending"}`
-- **GET /api/v1/transactions?account=123&dateRange=2023-01-01,2023-12-31** - Transaction history with pagination
-- **POST /api/v1/payments/pay** - Bill payment: `{"payee": "Utility Co", "accountFrom": "123", "amount": 150.00, "dueDate": "2023-02-01"}`
-- **WebSocket /alerts/{userId}** - Real-time fraud alerts and unusual activity notifications
+- `POST /api/v1/auth/login` - Authentication: `{"username": "user", "password": "hash", "device_fingerprint": "..."}` → MFA challenge or JWT token
+- `GET /api/v1/accounts/{accountId}/balance` - Get balance: Returns current balance with last updated timestamp
+- `POST /api/v1/transfers` - Fund transfer: `{"fromAccount": "123", "toAccount": "456", "amount": 100.00, "memo": "Rent"}` → `{"transactionId": "txn_789", "status": "pending"}`
+- `GET /api/v1/transactions?account=123&dateRange=2023-01-01,2023-12-31` - Transaction history with pagination
+- `POST /api/v1/payments/pay` - Bill payment: `{"payee": "Utility Co", "accountFrom": "123", "amount": 150.00, "dueDate": "2023-02-01"}`
+- `WebSocket /alerts/{userId}` - Real-time fraud alerts and unusual activity notifications
 
 ^[APIs implement rate limiting, encryption (TLS 1.3), and comprehensive audit logging.]
 

@@ -81,12 +81,11 @@ Store choice: NoSQL for high read throughput; blob storage for binary data to av
 CDN is infrastructure-level, but key internal interfaces:
 
 - **Cache Invalidation API** (for CMS/oracle-driven updates):
-  - POST /invalidate/{content_id} - Removes specific content from all caches
-  - POST /invalidate/wildcard - Batch invalidate by URL pattern
+  - `POST /invalidate/{content_id}` - Removes specific content from all caches
+  - `POST /invalidate/wildcard` - Batch invalidate by URL pattern
 
 - **Metrics API** (for monitoring):
-  - GET /metrics/edge/{server_id} - Returns cache hit rate, latency, bandwidth
-
+  - `GET /metrics/edge/{server_id}` - Returns cache hit rate, latency, bandwidth
 No public user-facing APIs; requests are HTTP/HTTPS to content URLs.
 
 ## Detailed Design

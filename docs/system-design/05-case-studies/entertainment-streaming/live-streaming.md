@@ -79,15 +79,15 @@ graph TD
 
 Core endpoints for stream lifecycle and interactions.
 
-- **POST /api/streams** - Start stream ingestion
+- `POST /api/streams` - Start stream ingestion
   - Request: `{creator_id, title, bitrate}`  
   - Response: `{stream_id, ingest_url}`
-- **GET /api/streams/{id}** - Retrieve stream metadata and playback URL
+- `GET /api/streams/{id}` - Retrieve stream metadata and playback URL
   - Response: `{stream_id, status, viewers, cdn_url}`
-- **POST /api/streams/{id}/chat** - Send chat message
+- `POST /api/streams/{id}/chat` - Send chat message
   - Request: `{user_id, message}`
   - WebSocket Response: Unidirectional stream to viewers
-- **PUT /api/streams/{id}/end** - End stream and trigger recording
+- `PUT /api/streams/{id}/end` - End stream and trigger recording
 
 ## Detailed Design
 

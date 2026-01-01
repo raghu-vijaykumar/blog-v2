@@ -148,7 +148,7 @@ Dimension Table: customer_dim
 ETL systems primarily expose internal APIs for orchestration, but external APIs provide management capabilities.
 
 ### Core Endpoints
-1. **POST /jobs** - Create new ETL job
+1. `POST /jobs` - Create new ETL job
    ```json
    Request:
    {
@@ -161,7 +161,7 @@ ETL systems primarily expose internal APIs for orchestration, but external APIs 
    Response: {"job_id": "uuid", "status": "created"}
    ```
 
-2. **GET /jobs/{id}/status** - Get job execution status
+2. `GET /jobs/{id}/status` - Get job execution status
    ```json
    Response:
    {
@@ -177,7 +177,7 @@ ETL systems primarily expose internal APIs for orchestration, but external APIs 
    }
    ```
 
-3. **POST /jobs/{id}/retry** - Manual retry failed job
+3. `POST /jobs/{id}/retry` - Manual retry failed job
    ```json
    Request: {"reason": "transient_failure"}
    Response: {"status": "queued"}

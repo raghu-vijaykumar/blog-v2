@@ -84,12 +84,11 @@ Storage: SQL (PostgreSQL) for structured metadata, NoSQL (Elasticsearch/DynamoDB
 
 ## API Design
 
-- **POST /users/register**: Body {email, password, username}. Response {user_id, token}.
-- **POST /videos/upload**: Auth token, Body {title, description, tags, file_url (pre-signed)}. Response {video_id}.
-- **GET /videos/search?q=query&limit=10**: Response [{video_id, title, creator, thumbnail}].
-- **GET /videos/{id}/stream**: Response {manifest_url, drm_keys}.
-- **POST /videos/{id}/view**: Track user views.
-
+- `POST /users/register`: Body `{email, password, username}`. Response  `{user_id, token}`.
+- `POST /videos/upload`: Auth token, Body `{title, description, tags, file_url (pre-signed)}`. Response `{video_id}`.
+- `GET /videos/search?q=query&limit=10`: Response `[{video_id, title, creator, thumbnail}]`.
+- `GET /videos/{id}/stream`: Response `{manifest_url, drm_keys}`.
+- `POST /videos/{id}/view`: Track user views.
 Sample Upload API:
 ```
 POST /videos/upload
