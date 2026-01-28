@@ -1,0 +1,10 @@
+{
+  "label": "Databases & Storage",
+  "position": 60,
+  "collapsed": false,
+  "link": {
+    "type": "generated-index",
+    "slug": "/system-design/01-fundamentals/databases-and-storage",
+    "title": "Databases & Storage"
+  }
+}

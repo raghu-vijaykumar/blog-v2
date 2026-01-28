@@ -1,0 +1,10 @@
+{
+  "label": "Rate Limiting & Backpressure",
+  "position": 80,
+  "collapsed": false,
+  "link": {
+    "type": "generated-index",
+    "slug": "/system-design/01-fundamentals/rate-limiting-and-backpressure",
+    "title": "Rate Limiting & Backpressure"
+  }
+}

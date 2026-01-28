@@ -1,0 +1,10 @@
+{
+  "label": "Load Balancing",
+  "position": 20,
+  "collapsed": false,
+  "link": {
+    "type": "generated-index",
+    "slug": "/system-design/01-fundamentals/load-balancing",
+    "title": "Load Balancing"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "label": "Availability & Fault Tolerance",
+  "position": 90,
+  "collapsed": false,
+  "link": {
+    "type": "generated-index",
+    "slug": "/system-design/01-fundamentals/availability-and-fault-tolerance",
+    "title": "Availability & Fault Tolerance"
+  }
+}

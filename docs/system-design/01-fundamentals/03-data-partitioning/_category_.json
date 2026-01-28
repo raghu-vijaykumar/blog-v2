@@ -1,0 +1,10 @@
+{
+  "label": "Data Partitioning",
+  "position": 30,
+  "collapsed": false,
+  "link": {
+    "type": "generated-index",
+    "slug": "/system-design/01-fundamentals/data-partitioning",
+    "title": "Data Partitioning (Sharding)"
+  }
+}

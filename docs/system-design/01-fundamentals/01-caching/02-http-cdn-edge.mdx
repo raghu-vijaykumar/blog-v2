@@ -1,0 +1,213 @@
+---
+title: HTTP, CDN and Edge Caching
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# HTTP, CDN and edge caching
+
+This module explains how HTTP caching works and how to design effective edge/CDN behavior. We’ll start with core headers, then show how freshness and validation interact, followed by CDN strategies, safe personalization, invalidation/versioning, and practical recipes. Code examples are at the end.
+
+## Core HTTP caching semantics (what caches pay attention to)
+- Cache-Control directives:
+  - public/private: shared caches (CDN/proxy) may store public responses; private restricts caching to the end-user’s browser.
+  - max-age=N: seconds a cache may serve a response without checking the origin.
+  - s-maxage=N: like max-age, but only for shared caches; overrides max-age for CDNs/proxies.
+  - no-cache: can store, but must revalidate with origin before using.
+  - no-store: do not store at all.
+  - must-revalidate: once stale, require revalidation.
+  - stale-while-revalidate=N: may serve stale while revalidating in background.
+  - stale-if-error=N: may serve stale if origin errors.
+- Validators:
+  - ETag/If-None-Match and Last-Modified/If-Modified-Since support lightweight revalidation (304 Not Modified).
+- Vary:
+  - Tells caches which request headers change the representation and thus the cache key (e.g., Accept-Language). Avoid Vary: Authorization.
+
+## Freshness vs validation (how caches decide to contact origin)
+- During freshness (max-age/s-maxage window), caches serve directly.
+- After freshness expires, caches either revalidate (If-None-Match) and get 304, or use SWR to serve one stale copy while revalidating.
+
+### Raw HTTP example (ETag revalidation)
+First response (server provides ETag):
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json
+Cache-Control: public, max-age=60
+ETag: "p123-v7"
+
+{"id":"p123","name":"Widget"}
+```
+Client revalidates later with If-None-Match:
+```http
+GET /products/p123 HTTP/1.1
+Host: api.example.com
+If-None-Match: "p123-v7"
+```
+If unchanged, server replies:
+```http
+HTTP/1.1 304 Not Modified
+Cache-Control: public, max-age=60
+ETag: "p123-v7"
+```
+If changed, server replies with new body + ETag:
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json
+Cache-Control: public, max-age=60
+ETag: "p123-v8"
+
+{"id":"p123","name":"Widget Plus"}
+```
+### curl example (conditional request)
+```bash
+curl -H "If-None-Match: <etag-from-previous>" -i https://example.com/data/123
+```
+
+### Example headers for a public API with good edge behavior
+```http
+Cache-Control: public, max-age=60, s-maxage=600, stale-while-revalidate=60, stale-if-error=120
+ETag: "v7"
+```
+Meaning: Browsers cache 60s; CDNs 600s; may serve stale for 60s during revalidation; if origin errors, serve stale up to 120s.
+
+## CDN/edge strategies and cache keys
+- Pull vs push: most sites use pull (CDN fetches from origin on miss).
+- Key construction: scheme + host + path + selected query params + selected headers. Keep only what’s necessary.
+- Vary and keys: safe examples include Accept-Encoding and Accept-Language. Avoid Vary: Authorization. Prefer Cache-Control: private for personalized responses or explicitly key on a safe, non-PII header/cookie if you must cache variants.
+- Header normalization: normalize or strip noisy headers (e.g., tracking headers) to prevent key explosion.
+
+## Personalized content at the edge (safe patterns)
+- Prefer: Cache-Control: private (or no-store) for per-user responses so shared caches don’t store them.
+- If you must cache variants: key on non-PII segments (e.g., role, AB test group) and accept lower hit ratio.
+- Never include bearer tokens or PII in cache keys.
+
+## Invalidation and versioning
+- Static assets: fingerprint filenames (app.8f3a1.css) and set very long TTL + immutable; deploys change filenames.
+- HTML/API: short TTLs + SWR; trigger CDN purge/invalidation on deploys or major content changes; scope purges to paths/prefixes.
+
+## Bypass and cache-busting
+- Use a versioned query param (?v=123) or a special header to bypass caches when needed (admin/incident tools).
+- Be careful: arbitrary query params create distinct entries; whitelist/normalize relevant params in CDN config.
+
+## Recipes
+- Static assets (JS/CSS/images):
+  - Cache-Control: public, max-age=31536000, immutable
+  - Fingerprinted filenames; rely on versioned assets for updates.
+- HTML documents:
+  - Cache-Control: public, max-age=60, s-maxage=300, stale-while-revalidate=60
+  - Use ETag/Last-Modified for revalidation; purge on critical content changes.
+- JSON API (non-personalized):
+  - Cache-Control: public, max-age=60, s-maxage=600, stale-while-revalidate=60
+  - ETag strong validators; 304 path on revalidation.
+- Personalized API:
+  - Cache-Control: private, max-age=0, no-store (for truly sensitive responses)
+  - Or private with short max-age if client-only caching is acceptable; avoid shared caches.
+
+## Implementation examples (tabbed)
+
+### Long‑lived static headers
+<Tabs>
+  <TabItem value="java" label="Java (Spring Boot)">
+
+```java
+import org.springframework.http.CacheControl;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import java.time.Duration;
+
+@RestController
+@RequestMapping("/assets")
+public class AssetController {
+  @GetMapping("/{name}")
+  public ResponseEntity<byte[]> get(@PathVariable String name) {
+    byte[] body = loadFromStorage(name);
+    return ResponseEntity.ok()
+        .cacheControl(CacheControl.maxAge(Duration.ofDays(365)).cachePublic().immutable())
+        .body(body);
+  }
+  private byte[] loadFromStorage(String n){ return new byte[0]; }
+}
+```
+
+  </TabItem>
+  <TabItem value="python" label="Python (Flask)">
+
+```python
+from flask import Flask, make_response
+
+app = Flask(__name__)
+
+@app.get('/assets/<name>')
+def asset(name):
+    body = load_from_storage(name)
+    resp = make_response(body, 200)
+    resp.headers['Cache-Control'] = 'public, max-age=31536000, immutable'
+    return resp
+
+def load_from_storage(name):
+    return b''
+```
+
+  </TabItem>
+</Tabs>
+
+### Conditional GET (If‑None‑Match)
+<Tabs>
+  <TabItem value="java" label="Java (Spring)">
+
+```java
+@GetMapping("/products/{id}")
+public ResponseEntity<String> get(@PathVariable String id, @RequestHeader(value="If-None-Match", required=false) String inm){
+  String body = loadProductJson(id);
+  String etag = '"' + hash(body) + '"';
+  if (etag.equals(inm)) {
+    return ResponseEntity.status(304)
+      .cacheControl(CacheControl.maxAge(Duration.ofSeconds(60)).cachePublic())
+      .eTag(etag)
+      .build();
+  }
+  return ResponseEntity.ok()
+    .cacheControl(CacheControl.maxAge(Duration.ofSeconds(60)).cachePublic())
+    .eTag(etag)
+    .body(body);
+}
+```
+
+  </TabItem>
+  <TabItem value="python" label="Python (Flask)">
+
+```python
+from flask import Flask, request, make_response
+import hashlib
+
+app = Flask(__name__)
+
+@app.get('/products/<pid>')
+def product(pid):
+    body = get_product(pid)  # bytes
+    etag = '"' + hashlib.md5(body).hexdigest() + '"'
+    inm = request.headers.get('If-None-Match')
+    if inm == etag:
+        resp = make_response('', 304)
+        resp.headers['Cache-Control'] = 'public, max-age=60'
+        resp.headers['ETag'] = etag
+        return resp
+    resp = make_response(body, 200)
+    resp.headers['Cache-Control'] = 'public, max-age=60'
+    resp.headers['ETag'] = etag
+    return resp
+
+def get_product(pid):
+    return b'{}'
+```
+
+  </TabItem>
+</Tabs>
+
+## Quick checklist
+- Choose freshness windows (max-age/s-maxage) and whether to enable SWR.
+- Decide validators (ETag/Last-Modified) and implement conditional GET.
+- Define CDN key construction (which headers/params to include) and normalize noisy inputs.
+- Set safe defaults for personalization (private/no-store; avoid Vary: Authorization).
+- Plan invalidation (fingerprinted assets, scoped purges) and emergency bypass.

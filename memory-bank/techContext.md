@@ -138,6 +138,7 @@ yarn serve
 - **File Naming**: kebab-case for directories and files
 - **Image Optimization**: Automated through Docusaurus
 - **SEO Optimization**: Meta tags and structured data
+ - **Heading Numbering**: Authors write plain Markdown headings using # for H1 (page title), ## for H2, etc. Automatic visual numbering is applied site-wide via CSS counters for H2–H6. Do not hardcode numbers in headings. H1 is intentionally not numbered. To opt out for a specific heading in MDX, use JSX: `<h3 className="no-number">Heading</h3>`.
 
 ### Deployment Pipeline
 ```yaml
@@ -207,6 +208,7 @@ jobs:
 - **Custom CSS**: Global styles in `/src/css/custom.css`
 - **Theme Customization**: Component-level theme overrides
 - **Responsive Design**: Mobile-first CSS approach
+ - **Automatic Heading Numbering**: Implemented with CSS counters in `src/css/custom.css` for docs and blog content (`.theme-doc-markdown`, `.markdown`) to render hierarchical numbers (e.g., 1., 1.1, 1.1.1) for H2–H6.
 
 ## Performance Optimization
 

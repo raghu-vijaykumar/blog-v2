@@ -1,0 +1,346 @@
+---
+title: Application-level Caching Patterns
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Application-level caching patterns
+
+This page covers common application-side patterns, when to use them, design choices (TTL, keys, eviction/admission), stampede prevention, and trade-offs. Code is provided in Java and Python using Redis.
+
+## Core patterns and when to use them
+
+### Cache-aside (lazy loading)
+- Flow: application checks cache → on miss fetch from origin → write to cache → return.
+- Use when: your app controls reads/writes and you want simple behavior with explicit control.
+- Pros: simple, avoids cache on writes that aren’t read; easy partial adoption.
+- Cons: first request misses; stampede risk on hot keys; consistency depends on explicit invalidation.
+
+### Read-through
+- Flow: app asks cache; cache loads from origin on miss (library/proxy handles loading).
+- Use when: using a cache library/provider that supports loaders; want uniform read path.
+- Pros: centralizes loading logic; fewer miss code paths in app.
+- Cons: less control, provider-specific semantics; similar stampede risks without singleflight.
+
+### Write-through
+- Flow: write goes to cache and origin synchronously.
+- Use when: you need cache and origin in sync for reads immediately after writes.
+- Pros: strong read-your-write behavior via cache; simple invalidation.
+- Cons: write path latency increases; double write failures need handling.
+
+### Write-back (write-behind)
+- Flow: write goes to cache first; async flushes to origin.
+- Use when: ultra-low write latency and batched flush is acceptable.
+- Pros: fast writes; batches reduce origin load.
+- Cons: risk of data loss on crash; complex failure handling and replay.
+
+### Write-around
+- Flow: write only to origin; cache invalidated/expired.
+- Use when: writes are rare or not immediately read; avoid polluting cache with write-only data.
+- Pros: avoids caching cold data.
+- Cons: first read after write will miss.
+
+## TTL design and freshness strategies
+- Hard TTL: simple expiry; risk of synchronized expiries (use jitter ±5–10%).
+- Soft TTL + refresh-ahead: serve slightly stale, refresh in background for smoother latency.
+- Adaptive TTL: adjust TTL by error rate or volatility class.
+
+### Adaptive TTL in practice
+- Volatility-driven: shorten TTL for keys with frequent content changes; lengthen TTL for keys that rarely change.
+- Update-frequency estimate: compute an exponentially weighted moving average (EWMA) of update intervals per key.
+  - Example: if avg update interval U ≈ 20 minutes, choose TTL ≈ clamp(U × 0.5, minTTL, maxTTL).
+- Request-rate aware: for hot, stable keys, increase TTL to reduce origin load; for cold or volatile keys, keep TTL shorter.
+- Origin health aware: during elevated error rates, prefer serving stale longer (within your staleness budget) to protect origin.
+- Safety rails: always clamp to [minTTL, maxTTL] and add jitter to avoid synchronized expiry.
+
+<Tabs>
+  <TabItem value="java" label="Java (adaptive TTL sketch)">
+
+```java
+class TtlPolicy {
+  private final int minTtl = 30;       // seconds
+  private final int maxTtl = 1800;     // 30m
+  private final double alpha = 0.2;    // EWMA factor
+
+  // Track per-key average update interval (seconds)
+  private final java.util.concurrent.ConcurrentHashMap<String, Double> avgUpdate = new java.util.concurrent.ConcurrentHashMap<>();
+
+  public int ttlFor(String key, boolean contentChangedRecently, int lastIntervalSec, double reqRateRps, double originErrorRate){
+    // Update EWMA if we observed a change
+    if (contentChangedRecently) {
+      avgUpdate.merge(key, (double)lastIntervalSec, (oldV, newV) -> alpha*newV + (1-alpha)*oldV);
+    }
+    double U = avgUpdate.getOrDefault(key, 600.0); // default 10m if unknown
+    // Base TTL: half of average update interval
+    double base = Math.max(minTtl, Math.min(maxTtl, 0.5 * U));
+    // Adjust by request rate: higher RPS, longer TTL within bounds
+    double rateBoost = Math.min(2.0, 1.0 + Math.log10(Math.max(1.0, reqRateRps))); // up to 2x
+    // Adjust by origin health: if errors high, bias upward (serve stale longer)
+    double healthBoost = originErrorRate > 0.05 ? 1.3 : 1.0; // tune threshold
+    int ttl = (int)Math.round(Math.max(minTtl, Math.min(maxTtl, base * rateBoost * healthBoost)));
+    // Add jitter ±10s
+    int jitter = java.util.concurrent.ThreadLocalRandom.current().nextInt(-10, 10);
+    return Math.max(minTtl, Math.min(maxTtl, ttl + jitter));
+  }
+}
+```
+
+  </TabItem>
+  <TabItem value="python" label="Python (adaptive TTL sketch)">
+
+```python
+import random, math
+
+class TtlPolicy:
+    def __init__(self, min_ttl=30, max_ttl=1800, alpha=0.2):
+        self.min = min_ttl
+        self.max = max_ttl
+        self.alpha = alpha
+        self.avg_update = {}  # key -> seconds
+
+    def ttl_for(self, key, changed_recently, last_interval_sec, req_rate_rps, origin_error_rate):
+        if changed_recently:
+            old = self.avg_update.get(key, 600.0)
+            self.avg_update[key] = self.alpha*last_interval_sec + (1-self.alpha)*old
+        U = self.avg_update.get(key, 600.0)
+        base = max(self.min, min(self.max, 0.5 * U))
+        rate_boost = min(2.0, 1.0 + (math.log10(req_rate_rps) if req_rate_rps and req_rate_rps > 0 else 0.0))
+        health_boost = 1.3 if origin_error_rate > 0.05 else 1.0
+        ttl = max(self.min, min(self.max, int(round(base * rate_boost * health_boost))))
+        return max(self.min, min(self.max, ttl + random.randint(-10, 10)))
+```
+
+  </TabItem>
+</Tabs>
+
+## Eviction and admission
+
+### Eviction policies (what gets removed when cache is full)
+- LRU (Least Recently Used): simple, good when recency ≈ likelihood of reuse; can be fooled by scans.
+- LFU (Least Frequently Used): favors items with high access frequency; may hold onto once-hot but now-cold items.
+- Size-aware LRU/LFU: consider cost = size; evict large low-value items first; improves byte hit ratio.
+- Segmented LRU (2Q): separate probationary vs protected segments to resist scans.
+- ARC: adaptive between recency and frequency; solid general-purpose but more complex.
+- CLOCK/Clock-Pro: approximations for performance in large caches.
+
+Guidelines
+- If objects vary widely in size, prefer size-aware eviction to avoid a few large objects evicting many small hot ones.
+- If workload has scans, avoid pure LRU; use segmented LRU or ARC.
+- Optimize for request AND byte hit ratios; measure both.
+
+### Admission control (what gets allowed in on a miss)
+- TinyLFU/WTinyLFU: a frequency sketch (Count-Min Sketch + doorkeeper) estimates popularity; admit only if the item’s estimated frequency is high enough.
+- Doorkeeper (Bloom filter): keep a small window to allow recent items while rejecting one-off cold items.
+
+When to use admission
+- Heavy-tailed traffic (Zipf): protects hot set from being evicted by cold one-offs.
+- Large objects with low reuse: reject or store in a separate tier.
+
+## Stampede prevention (thundering herd)
+
+### Techniques
+- Per-key locking / singleflight: only one concurrent miss triggers an origin fetch; others wait or serve stale.
+- Soft TTL + background refresh: return stale while a single refresher updates the cache.
+- Early refresh: if age > (TTL - delta), proactively refresh before hard expiry under controlled concurrency.
+- Refresh locks in Redis: SETNX a lock key with short TTL to elect a single refresher.
+- TTL jitter: randomize expiry to avoid synchronized refreshes across many keys.
+
+### Example: soft TTL with refresh lock (Redis)
+Store payload + metadata (soft expiry) and use Redis TTL as hard expiry.
+
+<Tabs>
+  <TabItem value="java" label="Java (soft TTL + refresh lock)">
+
+```java
+class CacheValue { String body; long softExpireEpochSec; }
+
+String getWithSoftTtl(String id){
+  String key = "user:v1:"+id;
+  try (redis.clients.jedis.Jedis j = pool.getResource()){
+    String raw = j.get(key);
+    long now = System.currentTimeMillis()/1000;
+    if (raw != null) {
+      CacheValue v = decode(raw);
+      if (now > v.softExpireEpochSec) {
+        String lockKey = key+":lock";
+        if (j.set(lockKey, "1", redis.clients.jedis.params.SetParams.setParams().nx().ex(30)) != null) {
+          EXECUTOR.submit(() -> {
+            String fresh = fetchUserFromDb(id);
+            CacheValue nv = new CacheValue();
+            nv.body = fresh;
+            nv.softExpireEpochSec = (System.currentTimeMillis()/1000) + 540; // new soft
+            j.setex(key, 600, encode(nv));     // hard 10m
+            j.del(lockKey);
+          });
+        }
+      }
+      return v.body;
+    }
+    // hard miss
+    String fresh = fetchUserFromDb(id);
+    CacheValue nv = new CacheValue();
+    nv.body = fresh; nv.softExpireEpochSec = now + 540;
+    j.setex(key, 600, encode(nv));
+    return fresh;
+  }
+}
+```
+
+  </TabItem>
+  <TabItem value="python" label="Python (soft TTL + refresh lock)">
+
+```python
+import json, time, threading
+
+def get_with_soft_ttl(user_id):
+    key = f"user:v1:{user_id}"
+    raw = r.get(key)
+    now = int(time.time())
+    if raw:
+        v = json.loads(raw)
+        if now > v['soft_expire']:
+            lock_key = key+":lock"
+            if r.set(lock_key, '1', nx=True, ex=30):
+                def refresh():
+                    fresh = fetch_user_from_db(user_id)
+                    nv = {'body': fresh.decode(), 'soft_expire': int(time.time()) + 540}
+                    r.setex(key, 600, json.dumps(nv))
+                    r.delete(lock_key)
+                threading.Thread(target=refresh, daemon=True).start()
+        return v['body'].encode()
+    # hard miss
+    fresh = fetch_user_from_db(user_id)
+    nv = {'body': fresh.decode(), 'soft_expire': now + 540}
+    r.setex(key, 600, json.dumps(nv))
+    return fresh
+```
+
+  </TabItem>
+</Tabs>
+
+## Key design
+- Namespace + version: `entity:v1:<id>`. Bump version on format change.
+- Multitenancy: `tenant:<t>:entity:v1:<id>` if needed.
+- Avoid secrets in keys; keep them compact and descriptive.
+
+## Code examples (tabbed)
+
+### Cache-aside with soft TTL, jitter and per-key singleflight
+<Tabs>
+  <TabItem value="java" label="Java (Jedis)">
+
+```java
+import redis.clients.jedis.*;
+import java.util.concurrent.*;
+
+public class UserRepo {
+  private final JedisPool pool = new JedisPool("localhost", 6379);
+  private final ConcurrentHashMap<String, Object> locks = new ConcurrentHashMap<>();
+
+  public String getUser(String id) {
+    String key = String.format("user:v1:%s", id);
+    try (Jedis j = pool.getResource()) {
+      String cached = j.get(key);
+      if (cached != null) return cached;
+
+      Object lock = locks.computeIfAbsent(key, k -> new Object());
+      synchronized (lock) {
+        cached = j.get(key);
+        if (cached != null) return cached;
+
+        String db = fetchUserFromDb(id);
+        int baseTtl = 600; // 10m
+        int jitter = ThreadLocalRandom.current().nextInt(-60, 60);
+        j.setex(key, baseTtl + jitter, db);
+        return db;
+      }
+    } finally {
+      locks.remove(key);
+    }
+  }
+
+  private String fetchUserFromDb(String id) { return "{...json...}"; }
+}
+```
+
+  </TabItem>
+  <TabItem value="python" label="Python (redis-py)">
+
+```python
+import redis, random, threading
+r = redis.Redis(host='localhost', port=6379)
+locks = {}
+
+def get_user(user_id):
+    key = f"user:v1:{user_id}"
+    val = r.get(key)
+    if val:
+        return val
+    lock = locks.setdefault(key, threading.Lock())
+    with lock:
+        val = r.get(key)
+        if val:
+            return val
+        db_val = fetch_user_from_db(user_id)
+        ttl = 600 + random.randint(-60, 60)
+        r.setex(key, ttl, db_val)
+        return db_val
+
+def fetch_user_from_db(user_id):
+    return b"{...json...}"
+```
+
+  </TabItem>
+</Tabs>
+
+### Write-through and write-around (illustrative)
+<Tabs>
+  <TabItem value="java" label="Java (Jedis)">
+
+```java
+public void writeThroughUser(User u){
+  String key = String.format("user:v1:%s", u.id());
+  try (Jedis j = pool.getResource()){
+    writeToOrigin(u); // DB write
+    j.setex(key, 600, serialize(u)); // keep cache in sync
+  }
+}
+
+public void writeAroundUser(User u){
+  writeToOrigin(u); // DB write only
+  try (Jedis j = pool.getResource()){
+    j.del(String.format("user:v1:%s", u.id())); // invalidate if present
+  }
+}
+```
+
+  </TabItem>
+  <TabItem value="python" label="Python (redis-py)">
+
+```python
+def write_through_user(u):
+    key = f"user:v1:{u['id']}"
+    write_to_origin(u)
+    r.setex(key, 600, serialize(u))
+
+def write_around_user(u):
+    write_to_origin(u)
+    r.delete(f"user:v1:{u['id']}")
+```
+
+  </TabItem>
+</Tabs>
+
+## Trade-offs and anti-patterns
+- Write-back requires durable queues/outbox to prevent data loss.
+- Over-caching personalized responses lowers hit ratio and risks leakage.
+- No invalidation owner → stale data; define clear ownership.
+- Large values evict hot small ones; split or compress.
+
+## Quick checklist
+- Pick pattern per use case (read/write ratio, freshness needs).
+- Define TTL strategy (hard vs soft + refresh-ahead) and add jitter.
+- Use per-key singleflight for hot keys; monitor for stampedes.
+- Design keys with namespaces/versioning; plan invalidation on writes.
+- Consider admission control to protect hot set from one-offs.

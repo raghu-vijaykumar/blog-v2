@@ -1,0 +1,10 @@
+{
+  "label": "Messaging & Streaming",
+  "position": 70,
+  "collapsed": false,
+  "link": {
+    "type": "generated-index",
+    "slug": "/system-design/01-fundamentals/messaging-and-streaming",
+    "title": "Messaging & Streaming"
+  }
+}
