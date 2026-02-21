@@ -80,9 +80,16 @@ Interview framing checklist
 
 Snippets
 - PromQL (p99 latency):
-  - histogram_quantile(0.99, sum by (le) (rate(http_server_duration_seconds_bucket[5m])))
+
+  ```promql
+  histogram_quantile(0.99, sum by (le) (rate(http_server_duration_seconds_bucket[5m])))
+  ```
+
 - PromQL (error ratio):
-  - sum(rate(http_requests_total{status=~"5.."}[5m])) / sum(rate(http_requests_total[5m]))
+
+  ```promql
+  sum(rate(http_requests_total{status=~"5.."}[5m])) / sum(rate(http_requests_total[5m]))
+  ```
 
 References
 - Prometheus Docs (histograms, recording rules), Mimir/Cortex/Thanos; Google SRE Workbook (SLIs), OpenTelemetry Metrics spec.

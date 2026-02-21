@@ -4,7 +4,7 @@
   "collapsed": false,
   "link": {
     "type": "generated-index",
-    "slug": "/system-design/01-fundamentals/load-balancing",
+    "slug": "/system-design/01-fundamentals/02-load-balancing",
     "title": "Load Balancing",
     "description": "Foundations, algorithms, health and resilience, affinity and state, global vs regional, Kubernetes and meshes, operations & observability, security, and practical configs."
   }

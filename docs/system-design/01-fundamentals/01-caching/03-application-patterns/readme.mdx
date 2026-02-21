@@ -334,20 +334,6 @@ def write_around_user(u):
   </TabItem>
 </Tabs>
 
-## Implementation examples (deep dives)
-
-- 01-LRU eviction
-  - Details: [LRU README](./01-lru/README.md)
-  - Code: [Python](./01-lru/code/python/lru.py), [Java](./01-lru/code/java/Lru.java)
-
-- 02-LFU eviction
-  - Details: [LFU README](./02-lfu/README.md)
-
-- 03-2Q (Segmented LRU)
-  - Details: [2Q README](./03-2q/README.md)
-
-More implementations (ARC, CLOCK/Clock-Pro, size-aware policies, TinyLFU admission) can be added under this folder following the same structure when code is available.
-
 ## Trade-offs and anti-patterns
 - Write-back requires durable queues/outbox to prevent data loss.
 - Over-caching personalized responses lowers hit ratio and risks leakage.

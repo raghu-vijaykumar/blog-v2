@@ -20,7 +20,7 @@ Core concepts and variants
 - Sampling: head vs. tail; route-aware or error-aware.
 
 Design decisions and trade-offs
-- Span naming: verb + resource (GET /orders/{id}). Avoid raw paths.
+- Span naming: verb + resource (GET /orders/:id). Avoid raw paths.
 - Attribute selection: semantic conventions (http.*, db.*, messaging.*). Avoid high-cardinality values.
 - Baggage limits: ≤ a few keys; use metrics/labels for aggregates and logs for details.
 - Tail sampling requires central processors; higher fidelity on anomalies at added complexity.
