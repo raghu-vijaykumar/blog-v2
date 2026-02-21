@@ -69,6 +69,12 @@ yarn serve
 6. **Code Review**: Push branch and create pull request
 7. **Deployment**: Merge to main triggers GitHub Pages deployment
 
+### Preview / Verification Behavior (Durable)
+- Do not auto-open the browser or files after content edits. Previews are user-initiated only.
+- The dev server is configured with `--no-open` (see package.json). Start it with `yarn start` (or `npm run start`) and manually navigate to the site in your browser.
+- Local URL: `http://localhost:3000/blog-v2/` (respects `baseUrl` from docusaurus.config.ts).
+- Automation and AI agents must not launch browsers or run OS-level `open` commands automatically; provide instructions instead and wait for explicit approval.
+
 ## Technical Constraints
 
 ### Hosting Limitations
@@ -139,6 +145,39 @@ yarn serve
 - **Image Optimization**: Automated through Docusaurus
 - **SEO Optimization**: Meta tags and structured data
  - **Heading Numbering**: Authors write plain Markdown headings using # for H1 (page title), ## for H2, etc. Automatic visual numbering is applied site-wide via CSS counters for H2–H6. Do not hardcode numbers in headings. H1 is intentionally not numbered. To opt out for a specific heading in MDX, use JSX: `<h3 className="no-number">Heading</h3>`.
+ - **Depth & Examples**: Each Markdown page should go beyond definitions—explain What/Why/When/How, include at least one concrete example when introducing a new concept, and provide code or relevant snippets when describing implementations. Use the deep‑dive structure for larger examples.
+ - **Cross‑links**: Avoid adding trailing “Related modules” sections; rely on sidebar/navigation ordering. Add inline links only when they materially aid comprehension.
+ - **MDX Safety**: Wrap angle‑bracket tokens like `<id>` in backticks to avoid MDX JSX parsing issues; prefer fenced code blocks for snippets.
+
+### Fundamentals content policy (Durable)
+- Fundamentals pages default to “doc‑only” with examples and diagrams; colocated runnable code is OFF by default.
+- Inline snippets are allowed only when they clarify policy/algorithms (pseudocode/SQL/YAML/config), each ≤ 30 lines.
+- Require ≥ 2 worked examples per fundamentals page (one quantitative, one architectural) and at least one Mermaid diagram when topology/flows benefit.
+- Opt‑in to the Docs + Code deep‑dive structure only when explicitly requested.
+
+### Docs + Code Deep‑Dive Structure (Durable Convention)
+- When a topic needs implementation details, convert the page into a folder and rename the page file to `readme.mdx` while preserving the public route via a `slug` frontmatter field.
+- Colocate runnable example code with minimal dependencies under language-specific subfolders.
+
+Directory pattern (generic)
+```
+docs/<domain>/<section>/<topic>/
+  readme.mdx                 # main page; include `slug` to keep route stable
+  <impl-name>/               # e.g., lru, lfu, arc, clock
+    README.md                # implementation notes + links back to readme.mdx
+    code/
+      python/*.py            # self-contained; tiny test in __main__
+      java/*.java            # self-contained; tiny test in main()
+      [optional] go/*.go, js/*.mjs, etc.
+```
+
+Linking conventions
+- In readme.mdx, add an “Implementation examples” section linking to each `<impl-name>/README.md` and example code using relative paths (e.g., `./lru/code/python/lru.py`).
+- Prefer short, focused examples that can be run directly (no frameworks unless necessary).
+
+When not to deep‑dive
+- Fundamentals/overview pages meant to teach concepts rather than implementations.
+- When code adds noise without improving understanding.
 
 ### Deployment Pipeline
 ```yaml

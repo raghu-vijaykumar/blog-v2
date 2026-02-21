@@ -1,5 +1,6 @@
 ---
 title: Application-level Caching Patterns
+slug: /system-design/01-fundamentals/01-caching/03-application-patterns
 ---
 
 import Tabs from '@theme/Tabs';
@@ -122,7 +123,8 @@ class TtlPolicy:
 - Size-aware LRU/LFU: consider cost = size; evict large low-value items first; improves byte hit ratio.
 - Segmented LRU (2Q): separate probationary vs protected segments to resist scans.
 - ARC: adaptive between recency and frequency; solid general-purpose but more complex.
-- CLOCK/Clock-Pro: approximations for performance in large caches.
+- CLOCK (Second-Chance): sweep a circular list; recently touched items get a second chance; evict the first with no recent use. Simple, O(1), resists scan pollution.
+- Clock-Pro: CLOCK extended with hot/cold sets and a small ghost history; promotes items with proven reuse and evicts one-offs quickly; higher hit rates on mixed/scanning workloads.
 
 Guidelines
 - If objects vary widely in size, prefer size-aware eviction to avoid a few large objects evicting many small hot ones.
@@ -331,6 +333,20 @@ def write_around_user(u):
 
   </TabItem>
 </Tabs>
+
+## Implementation examples (deep dives)
+
+- 01-LRU eviction
+  - Details: [LRU README](./01-lru/README.md)
+  - Code: [Python](./01-lru/code/python/lru.py), [Java](./01-lru/code/java/Lru.java)
+
+- 02-LFU eviction
+  - Details: [LFU README](./02-lfu/README.md)
+
+- 03-2Q (Segmented LRU)
+  - Details: [2Q README](./03-2q/README.md)
+
+More implementations (ARC, CLOCK/Clock-Pro, size-aware policies, TinyLFU admission) can be added under this folder following the same structure when code is available.
 
 ## Trade-offs and anti-patterns
 - Write-back requires durable queues/outbox to prevent data loss.

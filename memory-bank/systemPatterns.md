@@ -165,6 +165,57 @@ CDN Delivery (Global)
 - **Breadcrumb Navigation**: For deep content hierarchies
 - **Search-first Design**: Prominent search functionality
 
+## Documentation Deep-Dive Convention (Durable)
+
+When a topic requires code-level implementation details, use a colocated "docs + code" structure that scales to mini-projects while keeping the main docs clean.
+
+Principles
+- Keep fundamentals/overview pages simple (single MDX file).
+- When diving deep, move the page into a folder and make the page file readme.mdx, preserving the public slug.
+- Colocate minimal, runnable code examples under the same folder with clear, language-specific subfolders.
+
+Directory pattern (generic)
+- docs/<domain>/<section>/<topic>/
+  - readme.mdx  ← main doc page (set slug to match the original route)
+  - <nn-impl-name>/            ← prefix folders with nn- (e.g., 01-lru, 02-lfu)
+    - README.md  ← implementation notes and links back to the doc
+    - code/
+      - python/*.py (with a basic test in __main__ or a tiny harness)
+      - java/*.java (with a basic test in main)
+      - [optional] go/*.go, js/*.mjs, etc.
+
+Linking conventions
+- In readme.mdx, add an "Implementation examples" section that links to each <impl-name>/README.md and code files via relative paths.
+- Prefer short, self-contained examples over external dependencies.
+
+When NOT to deep-dive
+- Foundations/overview pages that explain concepts without implementation.
+- When example code would add more noise than clarity.
+
+### Fundamentals authoring defaults (Durable)
+- Deep‑dive “docs + code” is OFF by default for fundamentals pages. Enable only with an explicit request.
+- Fundamentals must include examples-first content: at least two worked examples and at least one diagram when topology/flows benefit.
+- Inline snippets are allowed for clarity (pseudocode/SQL/YAML/config) and should be short (≤ 30 lines). Prefer diagrams and numeric examples over code.
+- See also: memory-bank/docsAuthoringStandards.md for the canonical structure and acceptance checklist that all fundamentals pages must satisfy.
+
+## Docs Authoring Conventions (Durable)
+
+Authoring depth
+- Each Markdown doc should go into practical detail: cover What, Why, When, How, Trade‑offs, and a short Production checklist when applicable.
+
+Examples are mandatory for new concepts
+- When introducing a new concept, include at least one concrete example (scenario, calculation, diagram, or pseudo‑code). Prefer realistic, production‑oriented examples.
+
+Code for implementations
+- If describing an implementation, include relevant code snippets. Keep them minimal, runnable where feasible, and language‑fenced (```python, ```java, ```js).
+- For larger examples, use the Docs + Code deep‑dive structure defined above and colocate runnable code under language folders.
+
+Navigation and cross‑links
+- Do not add a trailing “Related modules” section to docs. The website navigation/sidebars determine ordering. Add inline cross‑links only when they materially aid comprehension.
+
+MDX/Markdown safety
+- Wrap literal angle‑bracket tokens (e.g., `<id>`) in backticks to avoid MDX JSX parsing. Use code fences for snippets and prefer plain `.md` unless MDX features are required.
+
 ## Performance Architecture
 
 ### Build-time Optimizations

@@ -1,0 +1,5 @@
+interface:
+  display_name: "Tech Docs Skill"
+  short_description: "Draft and refine system design documentation"
+  icon_large: "../pdf/assets/pdf.png"
+  default_prompt: "Apply the tech documentation workflow to produce the requested system-design doc updates. Summarize references and validation steps." 
