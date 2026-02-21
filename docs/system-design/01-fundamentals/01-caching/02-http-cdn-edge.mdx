@@ -23,6 +23,20 @@ This module explains how HTTP caching works and how to design effective edge/CDN
   - ETag/If-None-Match and Last-Modified/If-Modified-Since support lightweight revalidation (304 Not Modified).
 - Vary:
   - Tells caches which request headers change the representation and thus the cache key (e.g., Accept-Language). Avoid Vary: Authorization.
+  - Example: why `Vary: Authorization` backfires:
+
+```http
+GET /account HTTP/1.1
+Host: api.example.com
+Authorization: Bearer alice-token
+
+HTTP/1.1 200 OK
+Cache-Control: public, s-maxage=300
+Vary: Authorization
+```
+
+  - A CDN now stores a separate variant for every token value, which tanks the hit ratio and leaks bearer tokens into cache logs/analytics. Use `Cache-Control: private` (or `no-store`) for user-specific data instead of varying on Authorization, or move personalization into a safe synthetic key such as a role header without secrets.
+  - Safe synthetic key: have the origin attach a non-sensitive header like `X-User-Role: admin` or `X-AB-Bucket: B` that captures the variant without embedding credentials or PII. Configure the CDN to include just that header in the cache key so variants stay sharable and secure.
 
 ## Freshness vs validation (how caches decide to contact origin)
 - During freshness (max-age/s-maxage window), caches serve directly.
@@ -71,11 +85,68 @@ ETag: "v7"
 ```
 Meaning: Browsers cache 60s; CDNs 600s; may serve stale for 60s during revalidation; if origin errors, serve stale up to 120s.
 
+### Conditional GET implementations
+
+<Tabs>
+  <TabItem value="java" label="Java (Spring)">
+
+```java
+@GetMapping("/products/{id}")
+public ResponseEntity<String> get(@PathVariable String id,
+    @RequestHeader(value="If-None-Match", required=false) String inm) {
+  String body = loadProductJson(id);
+  String etag = '"' + hash(body) + '"';
+  if (etag.equals(inm)) {
+    return ResponseEntity.status(304)
+        .cacheControl(CacheControl.maxAge(Duration.ofSeconds(60)).cachePublic())
+        .eTag(etag)
+        .build();
+  }
+  return ResponseEntity.ok()
+      .cacheControl(CacheControl.maxAge(Duration.ofSeconds(60)).cachePublic())
+      .eTag(etag)
+      .body(body);
+}
+```
+
+  </TabItem>
+  <TabItem value="python" label="Python (Flask)">
+
+```python
+from flask import Flask, request, make_response
+import hashlib
+
+app = Flask(__name__)
+
+@app.get('/products/<pid>')
+def product(pid):
+    body = get_product(pid)
+    etag = '"' + hashlib.md5(body).hexdigest() + '"'
+    inm = request.headers.get('If-None-Match')
+    if inm == etag:
+        resp = make_response('', 304)
+        resp.headers['Cache-Control'] = 'public, max-age=60'
+        resp.headers['ETag'] = etag
+        return resp
+    resp = make_response(body, 200)
+    resp.headers['Cache-Control'] = 'public, max-age=60'
+    resp.headers['ETag'] = etag
+    return resp
+```
+
+  </TabItem>
+</Tabs>
+
 ## CDN/edge strategies and cache keys
 - Pull vs push: most sites use pull (CDN fetches from origin on miss).
 - Key construction: scheme + host + path + selected query params + selected headers. Keep only what’s necessary.
 - Vary and keys: safe examples include Accept-Encoding and Accept-Language. Avoid Vary: Authorization. Prefer Cache-Control: private for personalized responses or explicitly key on a safe, non-PII header/cookie if you must cache variants.
 - Header normalization: normalize or strip noisy headers (e.g., tracking headers) to prevent key explosion.
+- How to configure cache keys in practice:
+  1. Origin response: set `Cache-Control` and the minimal `Vary`/synthetic headers the CDN should respect (e.g., `X-User-Role`).
+  2. CDN policy: use the provider’s UI or config to whitelist exactly which headers/cookies/query params enter the key. Examples: attach a custom Cache Policy in AWS CloudFront; append synthetic headers in Fastly VCL (`set req.hash += req.http.X-User-Role;`); configure Cache Rules in Cloudflare (`cf.cacheKey`).
+  3. Propagate synthetic keys: ensure the CDN forwards the header you rely on so it survives to the cache key.
+  4. Test/stage: deploy in a staging behavior, then `curl -I` to confirm the key via cache status (`X-Cache`, `CF-Cache-Status`) before rolling out.
 
 ## Personalized content at the edge (safe patterns)
 - Prefer: Cache-Control: private (or no-store) for per-user responses so shared caches don’t store them.
@@ -89,6 +160,12 @@ Meaning: Browsers cache 60s; CDNs 600s; may serve stale for 60s during revalidat
 ## Bypass and cache-busting
 - Use a versioned query param (?v=123) or a special header to bypass caches when needed (admin/incident tools).
 - Be careful: arbitrary query params create distinct entries; whitelist/normalize relevant params in CDN config.
+- When to flip it: incident investigations, emergency hotfixes, or preview/admin flows that must skip cached data.
+- How to signal the emergency:
+  - Deployment flag or env var (`CACHE_BYPASS=true`) that makes the app append the bypass query string/header.
+  - Remote feature flag so SREs can enable bypass per environment without redeploying.
+  - Admin “incident mode” toggle stored centrally (DB/Redis) and read by middleware to decide per-request bypass.
+  - Build pipeline bumping the asset fingerprint; merely deploying the new hash forces clients/CDNs to fetch the fresh version.
 
 ## Recipes
 - Static assets (JS/CSS/images):
@@ -104,9 +181,8 @@ Meaning: Browsers cache 60s; CDNs 600s; may serve stale for 60s during revalidat
   - Cache-Control: private, max-age=0, no-store (for truly sensitive responses)
   - Or private with short max-age if client-only caching is acceptable; avoid shared caches.
 
-## Implementation examples (tabbed)
-
 ### Long‑lived static headers
+
 <Tabs>
   <TabItem value="java" label="Java (Spring Boot)">
 
@@ -151,60 +227,6 @@ def load_from_storage(name):
 
   </TabItem>
 </Tabs>
-
-### Conditional GET (If‑None‑Match)
-<Tabs>
-  <TabItem value="java" label="Java (Spring)">
-
-```java
-@GetMapping("/products/{id}")
-public ResponseEntity<String> get(@PathVariable String id, @RequestHeader(value="If-None-Match", required=false) String inm){
-  String body = loadProductJson(id);
-  String etag = '"' + hash(body) + '"';
-  if (etag.equals(inm)) {
-    return ResponseEntity.status(304)
-      .cacheControl(CacheControl.maxAge(Duration.ofSeconds(60)).cachePublic())
-      .eTag(etag)
-      .build();
-  }
-  return ResponseEntity.ok()
-    .cacheControl(CacheControl.maxAge(Duration.ofSeconds(60)).cachePublic())
-    .eTag(etag)
-    .body(body);
-}
-```
-
-  </TabItem>
-  <TabItem value="python" label="Python (Flask)">
-
-```python
-from flask import Flask, request, make_response
-import hashlib
-
-app = Flask(__name__)
-
-@app.get('/products/<pid>')
-def product(pid):
-    body = get_product(pid)  # bytes
-    etag = '"' + hashlib.md5(body).hexdigest() + '"'
-    inm = request.headers.get('If-None-Match')
-    if inm == etag:
-        resp = make_response('', 304)
-        resp.headers['Cache-Control'] = 'public, max-age=60'
-        resp.headers['ETag'] = etag
-        return resp
-    resp = make_response(body, 200)
-    resp.headers['Cache-Control'] = 'public, max-age=60'
-    resp.headers['ETag'] = etag
-    return resp
-
-def get_product(pid):
-    return b'{}'
-```
-
-  </TabItem>
-</Tabs>
-
 ## Quick checklist
 - Choose freshness windows (max-age/s-maxage) and whether to enable SWR.
 - Decide validators (ETag/Last-Modified) and implement conditional GET.

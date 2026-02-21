@@ -66,19 +66,9 @@ This module explains the “why” and “how to think” about caching in plain
 - If content is dynamic but read-heavy → add a distributed cache (Redis) with cache-aside and soft TTL.
 - If personalization prevents edge caching → keep edge private/no-store and cache safely inside the service boundary with scoped keys.
 
-### Mini case study (product detail page)
-- Observed traffic: 1000 RPS peak; only ~5% of SKUs are “hot” each hour.
-- Choose TTL: 5 minutes is acceptable; changes in description/images can lag a few minutes.
-- Estimate working set: suppose 10k SKUs served in 5 min window → 10k keys.
-- Size: avg 3 KB per item, overhead 1.5 → ~45 MB RAM. Fit comfortably in a small Redis instance.
-- Expected HR: Hot SKUs drive most traffic; with 5-minute TTL and pre-warm on deploy, HR can exceed 85%.
-
 ## Quick start checklist
 - Define staleness budget (how stale is acceptable?)
 - Decide placement (edge, proxy, in-app, Redis)
 - Pick TTL strategy (hard vs soft + SWR) and add jitter
 - Design keys with versioning and tenancy scope
 - Plan invalidation (owner, mechanism) and metrics (hits, misses, evictions, hot keys)
-
-## Where to go next
-- Module 2 covers HTTP semantics (Cache-Control, ETag) and CDN/edge strategies so you can apply these foundations on real traffic paths.

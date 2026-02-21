@@ -6,7 +6,7 @@ title: Fundamentals of System Design
 
 This section covers the core building blocks you’ll use across many architectures: caching, load balancing, data partitioning and replication, consistency models, queues/streams, storage choices, networking, reliability, and more.
 
-Topics (ordered)
+Topics
 - 01. Caching fundamentals and patterns → [Caching](./01-caching/README.md)
 - 02. Load balancing → [Load Balancing](./02-load-balancing/README.md)
 - 03. Data partitioning (sharding) → [Data Partitioning](./03-data-partitioning/README.md)
@@ -21,5 +21,3 @@ Topics (ordered)
 - 12. Security and auth fundamentals → [Security & Auth](./12-security-and-auth/README.md)
 - 13. IDs, time and ordering (UUID/Snowflake, clocks, monotonicity) → [IDs & Time](./13-ids-and-time/README.md)
 - 14. Search and indexing basics → [Search & Indexing](./14-search-and-indexing/README.md)
-
-Use the left sidebar to browse each topic. As modules are filled in, each section will include learning outcomes, core concepts, and hands-on exercises.
